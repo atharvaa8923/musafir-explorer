@@ -1,4 +1,3 @@
-
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import DestinationCard from "@/components/DestinationCard";
@@ -8,6 +7,7 @@ import BudgetTracker from "@/components/BudgetTracker";
 import PackingList from "@/components/PackingList";
 import { Map, MessageCircle, Wallet, Backpack, CloudSun } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const destinations = [
@@ -84,9 +84,11 @@ const Index = () => {
             </div>
             
             <div className="mt-10 text-center">
-              <Button className="bg-musafir-spiritual hover:bg-musafir-spiritual/90">
-                View All Destinations
-              </Button>
+              <Link to="/itinerary">
+                <Button className="bg-musafir-spiritual hover:bg-musafir-spiritual/90">
+                  View All Destinations
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
@@ -113,6 +115,7 @@ const Index = () => {
                 title="Budget Planner"
                 description="Track expenses and stay within your ₹5000 budget"
                 color="bg-musafir-spiritual"
+                link="/itinerary"
               />
               <FeatureCard 
                 icon={Backpack}
@@ -198,9 +201,9 @@ const Index = () => {
               <p className="text-white/70">Solo adventures under ₹5000</p>
             </div>
             <div className="flex flex-wrap gap-6">
-              <a href="#" className="hover:text-white/70 transition-colors">Destinations</a>
+              <Link to="/" className="hover:text-white/70 transition-colors">Destinations</Link>
+              <Link to="/itinerary" className="hover:text-white/70 transition-colors">Itineraries</Link>
               <a href="#" className="hover:text-white/70 transition-colors">Offline Maps</a>
-              <a href="#" className="hover:text-white/70 transition-colors">Budget Planner</a>
               <a href="#" className="hover:text-white/70 transition-colors">Weather</a>
               <a href="#" className="hover:text-white/70 transition-colors">Packing List</a>
             </div>
