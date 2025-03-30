@@ -1,8 +1,10 @@
 
 import { MapPin, Calendar, IndianRupee } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router-dom";
 
 interface DestinationCardProps {
+  id?: string;
   image: string;
   title: string;
   location: string;
@@ -11,7 +13,7 @@ interface DestinationCardProps {
   category: 'trekking' | 'meditation' | 'rafting' | 'religious' | 'hiking';
 }
 
-const DestinationCard = ({ image, title, location, price, days, category }: DestinationCardProps) => {
+const DestinationCard = ({ id, image, title, location, price, days, category }: DestinationCardProps) => {
   const categoryColors = {
     trekking: "bg-musafir-trekking",
     meditation: "bg-musafir-meditation",
@@ -28,7 +30,7 @@ const DestinationCard = ({ image, title, location, price, days, category }: Dest
     hiking: "Hiking"
   };
 
-  return (
+  const CardContent = () => (
     <div className="rounded-lg overflow-hidden border border-border bg-card hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
       <div className="relative">
         <img 
@@ -63,6 +65,16 @@ const DestinationCard = ({ image, title, location, price, days, category }: Dest
       </div>
     </div>
   );
+
+  if (id) {
+    return (
+      <Link to={`/destination/${id}`} className="block h-full">
+        <CardContent />
+      </Link>
+    );
+  }
+
+  return <CardContent />;
 };
 
 export default DestinationCard;

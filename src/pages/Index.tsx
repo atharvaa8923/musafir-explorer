@@ -1,3 +1,4 @@
+
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import DestinationCard from "@/components/DestinationCard";
@@ -8,58 +9,11 @@ import PackingList from "@/components/PackingList";
 import { Map, MessageCircle, Wallet, Backpack, CloudSun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { destinations } from "@/data/destinations";
 
 const Index = () => {
-  const destinations = [
-    {
-      image: "https://images.unsplash.com/photo-1472396961693-142e6e269027",
-      title: "Valley of Flowers Trek",
-      location: "Uttarakhand",
-      price: 4800,
-      days: 5,
-      category: "trekking" as const
-    },
-    {
-      image: "https://images.unsplash.com/photo-1482938289607-e9573fc25ebb",
-      title: "Rishikesh Rafting Experience",
-      location: "Rishikesh",
-      price: 2500,
-      days: 3,
-      category: "rafting" as const
-    },
-    {
-      image: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05",
-      title: "Triund Trek",
-      location: "Dharamshala",
-      price: 3200,
-      days: 2,
-      category: "hiking" as const
-    },
-    {
-      image: "https://images.unsplash.com/photo-1466442929976-97f336a657be",
-      title: "12 Jyotirlinga Pilgrimage",
-      location: "Various States",
-      price: 4900,
-      days: 12,
-      category: "religious" as const
-    },
-    {
-      image: "https://images.unsplash.com/photo-1492321936769-b49830bc1d1e",
-      title: "Meditation Retreat",
-      location: "Rishikesh",
-      price: 3500,
-      days: 7,
-      category: "meditation" as const
-    },
-    {
-      image: "https://images.unsplash.com/photo-1501854140801-50d01698950b",
-      title: "Himachal Backpacking",
-      location: "Himachal Pradesh",
-      price: 4500,
-      days: 6,
-      category: "trekking" as const
-    }
-  ];
+  // Get the first 6 destinations to display on the homepage
+  const featuredDestinations = destinations.slice(0, 6);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -78,13 +32,22 @@ const Index = () => {
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {destinations.map((destination, index) => (
-                <DestinationCard key={index} {...destination} />
+              {featuredDestinations.map((destination, index) => (
+                <DestinationCard 
+                  key={index}
+                  id={destination.id}
+                  image={destination.image}
+                  title={destination.title}
+                  location={destination.location}
+                  price={destination.price}
+                  days={destination.days}
+                  category={destination.category}
+                />
               ))}
             </div>
             
             <div className="mt-10 text-center">
-              <Link to="/itinerary">
+              <Link to="/destinations">
                 <Button className="bg-musafir-spiritual hover:bg-musafir-spiritual/90">
                   View All Destinations
                 </Button>
@@ -201,7 +164,8 @@ const Index = () => {
               <p className="text-white/70">Solo adventures under ₹5000</p>
             </div>
             <div className="flex flex-wrap gap-6">
-              <Link to="/" className="hover:text-white/70 transition-colors">Destinations</Link>
+              <Link to="/" className="hover:text-white/70 transition-colors">Home</Link>
+              <Link to="/destinations" className="hover:text-white/70 transition-colors">Destinations</Link>
               <Link to="/itinerary" className="hover:text-white/70 transition-colors">Itineraries</Link>
               <a href="#" className="hover:text-white/70 transition-colors">Offline Maps</a>
               <a href="#" className="hover:text-white/70 transition-colors">Weather</a>
