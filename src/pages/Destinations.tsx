@@ -1,18 +1,9 @@
-
 import React, { useState, useEffect, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import DestinationCard from "@/components/DestinationCard";
-import { SearchAndFilter } from "@/components/search";
+import { SearchAndFilter, FiltersState } from "@/components/search";
 import { destinations } from "@/data/destinations";
-
-interface FiltersState {
-  searchQuery: string;
-  location: string;
-  budget: [number, number];
-  days: [number, number];
-  categories: string[];
-}
 
 const Destinations = () => {
   const [filters, setFilters] = useState<FiltersState>({
@@ -25,25 +16,20 @@ const Destinations = () => {
 
   const filteredDestinations = useMemo(() => {
     return destinations.filter(destination => {
-      // Search query filter
       const matchesSearch = !filters.searchQuery || 
         destination.title.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
         destination.location.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
         destination.description.toLowerCase().includes(filters.searchQuery.toLowerCase());
       
-      // Location filter
       const matchesLocation = !filters.location || 
         destination.location.toLowerCase().includes(filters.location.toLowerCase());
       
-      // Budget filter
       const matchesBudget = destination.price >= filters.budget[0] && 
         destination.price <= filters.budget[1];
       
-      // Duration filter
       const matchesDays = destination.days >= filters.days[0] && 
         destination.days <= filters.days[1];
       
-      // Category filter
       const matchesCategory = filters.categories.length === 0 || 
         filters.categories.includes(destination.category);
       
@@ -67,12 +53,10 @@ const Destinations = () => {
             </p>
           </div>
           
-          {/* Search and Filters */}
           <div className="mb-8 p-4 border border-border rounded-lg bg-card">
             <SearchAndFilter onFilterChange={handleFilterChange} />
           </div>
           
-          {/* Results */}
           <div className="mb-6 flex justify-between items-center">
             <div>
               <h2 className="text-xl font-semibold">{filteredDestinations.length} destinations found</h2>
