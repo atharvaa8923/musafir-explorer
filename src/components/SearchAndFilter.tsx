@@ -79,13 +79,25 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
   };
 
   const handleBudgetChange = (value: number[]) => {
-    const newFilters = { ...filters, budget: [value[0], value[1]] };
+    // Ensure we have exactly two values for the budget tuple
+    const budgetTuple: [number, number] = [
+      value[0] ?? filters.budget[0],
+      value[1] ?? filters.budget[1]
+    ];
+    
+    const newFilters = { ...filters, budget: budgetTuple };
     setFilters(newFilters);
     onFilterChange(newFilters);
   };
 
   const handleDaysChange = (value: number[]) => {
-    const newFilters = { ...filters, days: [value[0], value[1]] };
+    // Ensure we have exactly two values for the days tuple
+    const daysTuple: [number, number] = [
+      value[0] ?? filters.days[0],
+      value[1] ?? filters.days[1]
+    ];
+    
+    const newFilters = { ...filters, days: daysTuple };
     setFilters(newFilters);
     onFilterChange(newFilters);
   };
