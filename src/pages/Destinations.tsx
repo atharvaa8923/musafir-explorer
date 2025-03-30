@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import Navbar from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import DestinationCard from "@/components/DestinationCard";
-import SearchAndFilter from "@/components/SearchAndFilter";
+import { SearchAndFilter } from "@/components/search";
 import { destinations } from "@/data/destinations";
 
 interface FiltersState {
