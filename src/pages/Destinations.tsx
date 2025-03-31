@@ -1,45 +1,22 @@
-import React, { useState, useEffect, useMemo } from "react";
+
+import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import { Link } from "react-router-dom";
 import DestinationCard from "@/components/DestinationCard";
-import { SearchAndFilter, FiltersState } from "@/components/search";
-import { destinations } from "@/data/destinations";
+import { SearchAndFilter } from "@/components/search";
+import { useDestinations } from "@/hooks/useDestinations";
+import { FiltersState } from "@/hooks/useFilters";
+import { Button } from "@/components/ui/button";
+import { RefreshCw } from "lucide-react";
 
 const Destinations = () => {
-  const [filters, setFilters] = useState<FiltersState>({
-    searchQuery: '',
-    location: '',
-    budget: [0, 5000],
-    days: [1, 14],
-    categories: [],
-  });
-
-  const filteredDestinations = useMemo(() => {
-    return destinations.filter(destination => {
-      const matchesSearch = !filters.searchQuery || 
-        destination.title.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-        destination.location.toLowerCase().includes(filters.searchQuery.toLowerCase()) ||
-        destination.description.toLowerCase().includes(filters.searchQuery.toLowerCase());
-      
-      const matchesLocation = !filters.location || 
-        destination.location.toLowerCase().includes(filters.location.toLowerCase());
-      
-      const matchesBudget = destination.price >= filters.budget[0] && 
-        destination.price <= filters.budget[1];
-      
-      const matchesDays = destination.days >= filters.days[0] && 
-        destination.days <= filters.days[1];
-      
-      const matchesCategory = filters.categories.length === 0 || 
-        filters.categories.includes(destination.category);
-      
-      return matchesSearch && matchesLocation && matchesBudget && matchesDays && matchesCategory;
-    });
-  }, [filters, destinations]);
-
-  const handleFilterChange = (newFilters: FiltersState) => {
-    setFilters(newFilters);
-  };
+  const {
+    destinations: filteredDestinations,
+    loading,
+    filters,
+    handleFilterChange,
+    refreshDestinations
+  } = useDestinations();
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -68,13 +45,40 @@ const Destinations = () => {
                 <p className="text-sm text-muted-foreground">Filtered results based on your preferences</p>
               )}
             </div>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={refreshDestinations}
+              disabled={loading}
+              className="flex items-center gap-1"
+            >
+              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
           </div>
           
-          {filteredDestinations.length > 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+              {[...Array(6)].map((_, index) => (
+                <div key={index} className="border border-border rounded-lg overflow-hidden bg-card h-[300px] animate-pulse">
+                  <div className="h-40 bg-muted"></div>
+                  <div className="p-4 space-y-3">
+                    <div className="h-5 bg-muted rounded w-3/4"></div>
+                    <div className="h-4 bg-muted rounded w-1/2"></div>
+                    <div className="flex justify-between mt-4">
+                      <div className="h-4 bg-muted rounded w-1/4"></div>
+                      <div className="h-4 bg-muted rounded w-1/4"></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredDestinations.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
               {filteredDestinations.map((destination, index) => (
-                <Link to={`/destination/${destination.id}`} key={index} className="block h-full">
+                <Link to={`/destination/${destination.id}`} key={destination.id || index} className="block h-full">
                   <DestinationCard 
+                    id={destination.id}
                     image={destination.image}
                     title={destination.title}
                     location={destination.location}
@@ -93,7 +97,7 @@ const Destinations = () => {
               </p>
               <button 
                 className="text-musafir-spiritual font-medium"
-                onClick={() => setFilters({
+                onClick={() => handleFilterChange({
                   searchQuery: '',
                   location: '',
                   budget: [0, 5000],

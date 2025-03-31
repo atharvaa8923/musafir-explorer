@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import databaseService from '@/services/databaseService';
 import { FiltersState } from '@/hooks/useFilters';
 import { toast } from '@/components/ui/use-toast';
@@ -16,7 +16,8 @@ export const useDestinations = (initialFilters?: FiltersState) => {
     categories: [],
   });
 
-  const fetchDestinations = async () => {
+  // Memoize fetchDestinations to prevent unnecessary re-renders
+  const fetchDestinations = useCallback(async () => {
     try {
       setLoading(true);
       const data = await databaseService.searchDestinations(filters);
@@ -33,14 +34,30 @@ export const useDestinations = (initialFilters?: FiltersState) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    fetchDestinations();
   }, [filters]);
+
+  // Subscribe to destination changes
+  useEffect(() => {
+    // Initial fetch
+    fetchDestinations();
+    
+    // Subscribe to destination changes
+    const unsubscribe = databaseService.subscribeToDestinations(() => {
+      fetchDestinations();
+    });
+    
+    // Cleanup subscription on component unmount
+    return () => {
+      unsubscribe();
+    };
+  }, [fetchDestinations]);
 
   const handleFilterChange = (newFilters: FiltersState) => {
     setFilters(newFilters);
+  };
+
+  const refreshDestinations = () => {
+    fetchDestinations();
   };
 
   return {
@@ -49,7 +66,7 @@ export const useDestinations = (initialFilters?: FiltersState) => {
     error,
     filters,
     handleFilterChange,
-    fetchDestinations,
+    refreshDestinations,
   };
 };
 
