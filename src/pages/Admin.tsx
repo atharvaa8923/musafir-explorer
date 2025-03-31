@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import AdminLogin from '@/components/admin/AdminLogin';
-import DestinationForm from '@/components/admin/DestinationForm';
+import DestinationForm from '@/components/admin/destination-form';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
