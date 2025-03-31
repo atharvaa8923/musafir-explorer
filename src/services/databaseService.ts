@@ -1,16 +1,24 @@
 
 import { destinations } from "@/data/destinations";
 
-// Mock database service with local storage persistence
+// Extended database service with admin capabilities
 export interface DatabaseService {
   getDestinations: () => Promise<typeof destinations>;
   getDestinationById: (id: string) => Promise<typeof destinations[0] | undefined>;
   searchDestinations: (filters: any) => Promise<typeof destinations>;
+  addDestination: (destination: any) => Promise<boolean>;
+  updateDestination: (id: string, data: any) => Promise<boolean>;
+  deleteDestination: (id: string) => Promise<boolean>;
+  isAdmin: () => Promise<boolean>;
+  login: (username: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
 }
 
 // Implementation using local storage for persistence
 class LocalStorageDatabase implements DatabaseService {
   private storageKey = "musafir-destinations";
+  private adminKey = "musafir-admin";
+  private adminCredentials = { username: "admin", password: "musafir123" };
 
   constructor() {
     // Initialize local storage with sample data if it doesn't exist
@@ -22,6 +30,11 @@ class LocalStorageDatabase implements DatabaseService {
   private getLocalData() {
     const data = localStorage.getItem(this.storageKey);
     return data ? JSON.parse(data) : destinations;
+  }
+
+  private saveLocalData(data: any) {
+    localStorage.setItem(this.storageKey, JSON.stringify(data));
+    return true;
   }
 
   async getDestinations() {
@@ -79,6 +92,58 @@ class LocalStorageDatabase implements DatabaseService {
     }
 
     return filteredDestinations;
+  }
+
+  async addDestination(destination: any) {
+    if (!await this.isAdmin()) return false;
+    
+    const allDestinations = this.getLocalData();
+    const newDestination = {
+      ...destination,
+      id: destination.id || `destination-${Date.now()}`,
+    };
+    
+    allDestinations.push(newDestination);
+    return this.saveLocalData(allDestinations);
+  }
+
+  async updateDestination(id: string, data: any) {
+    if (!await this.isAdmin()) return false;
+    
+    const allDestinations = this.getLocalData();
+    const index = allDestinations.findIndex(dest => dest.id === id);
+    
+    if (index === -1) return false;
+    
+    allDestinations[index] = { ...allDestinations[index], ...data };
+    return this.saveLocalData(allDestinations);
+  }
+
+  async deleteDestination(id: string) {
+    if (!await this.isAdmin()) return false;
+    
+    const allDestinations = this.getLocalData();
+    const filteredDestinations = allDestinations.filter(dest => dest.id !== id);
+    
+    if (filteredDestinations.length === allDestinations.length) return false;
+    
+    return this.saveLocalData(filteredDestinations);
+  }
+
+  async isAdmin() {
+    return localStorage.getItem(this.adminKey) === 'true';
+  }
+
+  async login(username: string, password: string) {
+    if (username === this.adminCredentials.username && password === this.adminCredentials.password) {
+      localStorage.setItem(this.adminKey, 'true');
+      return true;
+    }
+    return false;
+  }
+
+  async logout() {
+    localStorage.removeItem(this.adminKey);
   }
 }
 

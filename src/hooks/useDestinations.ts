@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import databaseService from '@/services/databaseService';
 import { FiltersState } from '@/hooks/useFilters';
+import { toast } from '@/components/ui/use-toast';
 
 export const useDestinations = (initialFilters?: FiltersState) => {
   const [destinations, setDestinations] = useState([]);
@@ -24,6 +25,11 @@ export const useDestinations = (initialFilters?: FiltersState) => {
     } catch (err) {
       console.error('Error fetching destinations:', err);
       setError(err);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to load destinations. Please try again later.",
+      });
     } finally {
       setLoading(false);
     }

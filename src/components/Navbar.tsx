@@ -1,65 +1,130 @@
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Map, Backpack, Wallet, MessageCircle, Sun } from "lucide-react";
+import { useMobile } from "@/hooks/use-mobile";
+import databaseService from "@/services/databaseService";
 
 const Navbar = () => {
+  const { isMobile } = useMobile();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      const adminStatus = await databaseService.isAdmin();
+      setIsAdmin(adminStatus);
+    };
+    
+    checkAdmin();
+  }, [location.pathname]);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
+  const navLinks = [
+    { name: "Home", path: "/" },
+    { name: "Destinations", path: "/destinations" },
+    { name: "Itineraries", path: "/itinerary" },
+  ];
+
+  const isActive = (path: string) => {
+    if (path === "/" && location.pathname === "/") {
+      return true;
+    }
+    return location.pathname.startsWith(path) && path !== "/";
+  };
 
   return (
-    <header className="sticky top-0 bg-background/95 backdrop-blur-sm z-50 border-b border-border">
-      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center">
-          <h1 className="text-2xl font-bold text-musafir-brown">
-            <span className="text-musafir-spiritual">Musafir</span>
-          </h1>
-        </div>
-
-        {/* Desktop menu */}
-        <nav className="hidden md:flex items-center space-x-6">
-          <NavItem icon={<Map size={18} />} label="Offline Maps" />
-          <NavItem icon={<Backpack size={18} />} label="Packing List" />
-          <NavItem icon={<Wallet size={18} />} label="Budget" />
-          <NavItem icon={<MessageCircle size={18} />} label="Chat" />
-          <NavItem icon={<Sun size={18} />} label="Weather" />
-          <Button className="bg-musafir-trekking hover:bg-musafir-trekking/90">Explore Now</Button>
-        </nav>
-
-        {/* Mobile menu button */}
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="md:hidden"
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? <X /> : <Menu />}
-        </Button>
-      </div>
-
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="md:hidden bg-background border-b border-border">
-          <div className="container mx-auto px-4 py-3 flex flex-col space-y-3">
-            <NavItem icon={<Map size={18} />} label="Offline Maps" />
-            <NavItem icon={<Backpack size={18} />} label="Packing List" />
-            <NavItem icon={<Wallet size={18} />} label="Budget" />
-            <NavItem icon={<MessageCircle size={18} />} label="Chat" />
-            <NavItem icon={<Sun size={18} />} label="Weather" />
-            <Button className="bg-musafir-trekking hover:bg-musafir-trekking/90 w-full">
-              Explore Now
-            </Button>
+    <nav className="bg-white border-b border-border sticky top-0 z-50">
+      <div className="container px-4 mx-auto">
+        <div className="flex justify-between items-center h-16">
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center">
+              <span className="text-xl font-bold text-musafir-brown">Musafir</span>
+            </Link>
           </div>
+
+          {isMobile ? (
+            <>
+              <Button variant="ghost" size="icon" onClick={toggleMenu} aria-label="Toggle menu">
+                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </Button>
+
+              {isMenuOpen && (
+                <div className="fixed inset-0 top-16 bg-background z-40">
+                  <div className="p-4 flex flex-col space-y-4">
+                    {navLinks.map((link) => (
+                      <Link
+                        key={link.path}
+                        to={link.path}
+                        onClick={closeMenu}
+                        className={`px-3 py-2 rounded-md text-lg ${
+                          isActive(link.path)
+                            ? "bg-musafir-light text-musafir-brown font-medium"
+                            : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                      >
+                        {link.name}
+                      </Link>
+                    ))}
+                    {isAdmin && (
+                      <Link
+                        to="/admin"
+                        onClick={closeMenu}
+                        className={`px-3 py-2 rounded-md text-lg flex items-center ${
+                          isActive("/admin")
+                            ? "bg-musafir-spiritual/10 text-musafir-spiritual font-medium"
+                            : "text-gray-700 hover:bg-gray-100"
+                        }`}
+                      >
+                        <User className="mr-2 h-4 w-4" /> Admin
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="flex space-x-2">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`px-3 py-2 rounded-md ${
+                    isActive(link.path)
+                      ? "bg-musafir-light text-musafir-brown font-medium"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  {link.name}
+                </Link>
+              ))}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  className={`px-3 py-2 rounded-md flex items-center ${
+                    isActive("/admin")
+                      ? "bg-musafir-spiritual/10 text-musafir-spiritual font-medium"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  <User className="mr-2 h-4 w-4" /> Admin
+                </Link>
+              )}
+            </div>
+          )}
         </div>
-      )}
-    </header>
+      </div>
+    </nav>
   );
 };
-
-const NavItem = ({ icon, label }: { icon: React.ReactNode; label: string }) => (
-  <button className="flex items-center space-x-2 text-foreground/80 hover:text-foreground transition-colors">
-    {icon}
-    <span>{label}</span>
-  </button>
-);
 
 export default Navbar;

@@ -8,9 +8,10 @@ import { toast } from '@/components/ui/use-toast';
 
 interface DestinationMapProps {
   location: [number, number];
+  title?: string;
 }
 
-const DestinationMap = ({ location }: DestinationMapProps) => {
+const DestinationMap = ({ location, title }: DestinationMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [mapboxToken, setMapboxToken] = useState<string>(localStorage.getItem('mapbox_token') || '');
@@ -39,8 +40,13 @@ const DestinationMap = ({ location }: DestinationMapProps) => {
       );
 
       // Add marker at the location
+      const popup = new mapboxgl.Popup({ offset: 25 })
+        .setHTML(`<h3 class="font-bold">${title || 'Destination'}</h3>`)
+        .setMaxWidth('300px');
+
       new mapboxgl.Marker({ color: '#E57373' })
         .setLngLat(location)
+        .setPopup(popup)
         .addTo(map.current);
 
       // Add atmosphere and fog effects
@@ -50,6 +56,16 @@ const DestinationMap = ({ location }: DestinationMapProps) => {
           'high-color': 'rgb(200, 200, 225)',
           'horizon-blend': 0.2,
         });
+
+        // Add terrain if available
+        map.current?.addSource('mapbox-dem', {
+          'type': 'raster-dem',
+          'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+          'tileSize': 512,
+          'maxzoom': 14
+        });
+        
+        map.current?.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
       });
 
       // Cleanup
@@ -60,7 +76,7 @@ const DestinationMap = ({ location }: DestinationMapProps) => {
       console.error("Error initializing map:", error);
       setShowTokenInput(true);
     }
-  }, [location, mapboxToken]);
+  }, [location, mapboxToken, title]);
 
   const handleTokenSubmit = (e: React.FormEvent) => {
     e.preventDefault();
