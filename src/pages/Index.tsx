@@ -1,4 +1,5 @@
 
+import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import DestinationCard from "@/components/DestinationCard";
@@ -9,11 +10,39 @@ import PackingList from "@/components/PackingList";
 import { Map, MessageCircle, Wallet, Backpack, CloudSun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { destinations } from "@/data/destinations";
+import { toast } from "@/components/ui/use-toast";
+import databaseService from "@/services/databaseService";
 
 const Index = () => {
-  // Get the first 6 destinations to display on the homepage
-  const featuredDestinations = destinations.slice(0, 6);
+  const [featuredDestinations, setFeaturedDestinations] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadDestinations = async () => {
+      try {
+        setLoading(true);
+        const allDestinations = await databaseService.getDestinations();
+        // Get the first 6 destinations to display on the homepage
+        setFeaturedDestinations(allDestinations.slice(0, 6));
+        
+        toast({
+          title: "Welcome to Musafir",
+          description: "Your budget-friendly travel companion is ready to help!",
+        });
+      } catch (error) {
+        console.error("Error loading destinations:", error);
+        toast({
+          variant: "destructive",
+          title: "Error loading destinations",
+          description: "Please try refreshing the page.",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadDestinations();
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -31,20 +60,26 @@ const Index = () => {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {featuredDestinations.map((destination, index) => (
-                <DestinationCard 
-                  key={index}
-                  id={destination.id}
-                  image={destination.image}
-                  title={destination.title}
-                  location={destination.location}
-                  price={destination.price}
-                  days={destination.days}
-                  category={destination.category}
-                />
-              ))}
-            </div>
+            {loading ? (
+              <div className="flex justify-center items-center py-20">
+                <div className="animate-spin h-10 w-10 border-4 border-musafir-spiritual rounded-full border-t-transparent"></div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredDestinations.map((destination, index) => (
+                  <DestinationCard 
+                    key={index}
+                    id={destination.id}
+                    image={destination.image}
+                    title={destination.title}
+                    location={destination.location}
+                    price={destination.price}
+                    days={destination.days}
+                    category={destination.category}
+                  />
+                ))}
+              </div>
+            )}
             
             <div className="mt-10 text-center">
               <Link to="/destinations">
