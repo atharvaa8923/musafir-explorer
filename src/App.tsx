@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Index from '@/pages/Index';
@@ -6,7 +7,7 @@ import DestinationDetail from '@/pages/DestinationDetail';
 import Itinerary from '@/pages/Itinerary';
 import NotFound from '@/pages/NotFound';
 import { Toaster } from "@/components/ui/toaster"
-import Admin from '@/pages/Admin';
+import Admin from '@/pages/admin';
 
 function App() {
   return (
