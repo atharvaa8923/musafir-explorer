@@ -1,5 +1,5 @@
 
-import { Destination } from './destinations';
+import { Destination } from './types';
 
 export const newDestinations: Destination[] = [
   {
