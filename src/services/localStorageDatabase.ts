@@ -1,4 +1,3 @@
-
 import { destinations } from "@/data/destinations";
 import { toast } from "@/components/ui/use-toast";
 import { DatabaseService, Destination, Destinations, SearchFilters } from './types';
@@ -15,10 +14,10 @@ export class LocalStorageDatabase implements DatabaseService {
   private lastFetch: number = 0;
   private cacheExpiryMs: number = 30000; // 30 seconds cache expiry
 
-  constructor() {
+  constructor(initialData: Destinations = destinations) {
     // Initialize local storage with sample data if it doesn't exist
     if (!localStorage.getItem(this.storageKey)) {
-      saveToStorage(this.storageKey, destinations);
+      saveToStorage(this.storageKey, initialData);
     }
     
     // Add event listener for storage changes from other tabs

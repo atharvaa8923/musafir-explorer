@@ -1,14 +1,67 @@
 
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import ItineraryDetails from "@/components/ItineraryDetails";
+import { Button } from "@/components/ui/button";
+import { Hiking, Compass, Map, Tent } from "lucide-react";
 
 const Itinerary = () => {
+  const [selectedCategory, setSelectedCategory] = useState("all");
+
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1 py-6">
-        <ItineraryDetails />
+        <div className="container mx-auto px-4 mb-6">
+          <h1 className="text-3xl font-bold mb-6">Explore Itineraries</h1>
+          <div className="flex flex-wrap gap-2 mb-6">
+            <Button 
+              variant={selectedCategory === "all" ? "default" : "outline"}
+              onClick={() => handleCategoryChange("all")}
+              className={selectedCategory === "all" ? "bg-musafir-brown" : ""}
+            >
+              <Compass className="mr-2 h-4 w-4" />
+              All
+            </Button>
+            <Button 
+              variant={selectedCategory === "trekking" ? "default" : "outline"}
+              onClick={() => handleCategoryChange("trekking")}
+              className={selectedCategory === "trekking" ? "bg-musafir-trekking" : ""}
+            >
+              <Tent className="mr-2 h-4 w-4" />
+              Trekking
+            </Button>
+            <Button 
+              variant={selectedCategory === "meditation" ? "default" : "outline"}
+              onClick={() => handleCategoryChange("meditation")}
+              className={selectedCategory === "meditation" ? "bg-musafir-meditation" : ""}
+            >
+              <Map className="mr-2 h-4 w-4" />
+              Meditation
+            </Button>
+            <Button 
+              variant={selectedCategory === "religious" ? "default" : "outline"}
+              onClick={() => handleCategoryChange("religious")}
+              className={selectedCategory === "religious" ? "bg-musafir-spiritual" : ""}
+            >
+              <Map className="mr-2 h-4 w-4" />
+              Pilgrimages
+            </Button>
+            <Button 
+              variant={selectedCategory === "hiking" ? "default" : "outline"}
+              onClick={() => handleCategoryChange("hiking")}
+              className={selectedCategory === "hiking" ? "bg-musafir-forest" : ""}
+            >
+              <Hiking className="mr-2 h-4 w-4" />
+              Hiking
+            </Button>
+          </div>
+        </div>
+        <ItineraryDetails selectedCategory={selectedCategory} />
       </main>
       
       <footer className="bg-musafir-brown text-white py-8">

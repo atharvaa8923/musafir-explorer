@@ -1,5 +1,4 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -7,6 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import databaseService from "@/services/databaseService";
+import { toast } from "@/components/ui/use-toast";
 import { 
   Calendar, 
   Train, 
@@ -17,180 +18,144 @@ import {
   Navigation, 
   IndianRupee,
   ChevronDown,
-  Info
+  Info,
+  Pin,
+  AlertTriangle
 } from "lucide-react";
 
-const ItineraryDetails = () => {
-  const [destination, setDestination] = useState("valley-of-flowers");
+interface ItineraryDetailsProps {
+  selectedCategory: string;
+}
+
+const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({ selectedCategory }) => {
+  const [destination, setDestination] = useState("");
   const [duration, setDuration] = useState("5d");
   const [expanded, setExpanded] = useState<string | null>(null);
-
-  // Sample itinerary data for each destination
-  const itineraries = {
-    "valley-of-flowers": {
-      title: "Valley of Flowers Trek",
-      location: "Uttarakhand",
-      totalCost: 4800,
-      days: 5,
-      description: "Experience the breathtaking beauty of the UNESCO World Heritage Site, Valley of Flowers, famous for its meadows of endemic alpine flowers and variety of flora.",
-      transportation: [
-        { type: "Train", from: "Delhi", to: "Haridwar", cost: 600, duration: "5h 30m", time: "22:30 - 04:00", options: ["Sleeper", "AC 3-Tier"] },
-        { type: "Bus", from: "Haridwar", to: "Govindghat", cost: 450, duration: "10h", time: "06:00 - 16:00", options: ["AC", "Non-AC"] },
-        { type: "Shared Taxi", from: "Govindghat", to: "Ghangaria", cost: 300, duration: "1h", time: "Flexible", options: ["Shared Jeep"] },
-      ],
-      accommodation: [
-        { type: "Guest House", location: "Ghangaria", cost: 500, perNight: true, options: ["Dormitory", "Basic Room", "Deluxe Room"] },
-        { type: "Camping", location: "Valley of Flowers", cost: 700, perNight: true, options: ["Tent"] },
-        { type: "Budget Hotel", location: "Haridwar", cost: 600, perNight: true, options: ["Single", "Double"] },
-      ],
-      dayWiseItinerary: [
-        {
-          day: 1,
-          title: "Delhi to Haridwar",
-          description: "Take an overnight train to Haridwar. Rest in a budget hotel upon arrival.",
-          budget: 1200,
-        },
-        {
-          day: 2,
-          title: "Haridwar to Govindghat to Ghangaria",
-          description: "Take an early morning bus to Govindghat, followed by a shared taxi to Ghangaria. Stay overnight in Ghangaria.",
-          budget: 1250,
-        },
-        {
-          day: 3,
-          title: "Valley of Flowers Trek",
-          description: "Full day trek to Valley of Flowers. Return to Ghangaria by evening.",
-          budget: 800,
-        },
-        {
-          day: 4,
-          title: "Hemkund Sahib Trek (Optional)",
-          description: "Trek to Hemkund Sahib or explore Ghangaria. Stay overnight in Ghangaria.",
-          budget: 800,
-        },
-        {
-          day: 5,
-          title: "Return to Haridwar/Delhi",
-          description: "Return to Govindghat, take a bus to Haridwar and then train to Delhi.",
-          budget: 750,
-        },
-      ]
-    },
-    "rishikesh-rafting": {
-      title: "Rishikesh Rafting Experience",
-      location: "Rishikesh",
-      totalCost: 2500,
-      days: 3,
-      description: "Experience the thrill of white water rafting in the adventure capital of India. Tackle rapids ranging from Grade I to Grade IV on the mighty Ganges.",
-      transportation: [
-        { type: "Train", from: "Delhi", to: "Haridwar", cost: 600, duration: "5h 30m", time: "06:00 - 11:30", options: ["Sleeper", "AC Chair Car", "AC 3-Tier"] },
-        { type: "Bus", from: "Haridwar", to: "Rishikesh", cost: 100, duration: "1h", time: "12:00 - 13:00", options: ["AC", "Non-AC", "Shared Taxi"] },
-      ],
-      accommodation: [
-        { type: "Hostel", location: "Rishikesh", cost: 350, perNight: true, options: ["Dormitory", "Private Room"] },
-        { type: "Camping", location: "Shivpuri", cost: 450, perNight: true, options: ["Tent"] },
-      ],
-      dayWiseItinerary: [
-        {
-          day: 1,
-          title: "Delhi to Rishikesh",
-          description: "Morning train to Haridwar, connect to bus for Rishikesh. Evening explore local markets and attend Ganga Aarti.",
-          budget: 1050,
-        },
-        {
-          day: 2,
-          title: "Rafting Day",
-          description: "Full day white water rafting experience (16km stretch). Evening at leisure.",
-          budget: 800,
-        },
-        {
-          day: 3,
-          title: "Return to Delhi",
-          description: "Morning yoga by the Ganges. Afternoon return to Delhi.",
-          budget: 650,
-        },
-      ]
-    },
-    "meditation-retreat": {
-      title: "Meditation Retreat",
-      location: "Rishikesh",
-      totalCost: 3500,
-      days: 7,
-      description: "A week-long meditation and yoga retreat in the yoga capital of the world. Learn ancient techniques from experienced practitioners.",
-      transportation: [
-        { type: "Train", from: "Delhi", to: "Haridwar", cost: 600, duration: "5h 30m", time: "06:00 - 11:30", options: ["Sleeper", "AC 3-Tier"] },
-        { type: "Bus", from: "Haridwar", to: "Rishikesh", cost: 100, duration: "1h", time: "12:00 - 13:00", options: ["AC", "Non-AC"] },
-      ],
-      accommodation: [
-        { type: "Ashram", location: "Rishikesh", cost: 400, perNight: true, options: ["Shared Room", "Private Room"] },
-      ],
-      dayWiseItinerary: [
-        {
-          day: 1,
-          title: "Delhi to Rishikesh",
-          description: "Morning train to Haridwar, connect to bus for Rishikesh. Check-in at the ashram.",
-          budget: 1100,
-        },
-        {
-          day: 2,
-          title: "Yoga and Meditation",
-          description: "Morning yoga, followed by meditation sessions and philosophy classes.",
-          budget: 400,
-        },
-        {
-          day: 3,
-          title: "Yoga and Nature Walk",
-          description: "Morning yoga, afternoon nature walk along the Ganges.",
-          budget: 400,
-        },
-        {
-          day: 4,
-          title: "Silent Day",
-          description: "A day of silent meditation and introspection.",
-          budget: 400,
-        },
-        {
-          day: 5,
-          title: "Yoga and Ayurveda",
-          description: "Morning yoga, afternoon Ayurvedic cooking class.",
-          budget: 400,
-        },
-        {
-          day: 6,
-          title: "Yoga and Waterfall Visit",
-          description: "Morning yoga, afternoon visit to nearby waterfall.",
-          budget: 400,
-        },
-        {
-          day: 7,
-          title: "Return to Delhi",
-          description: "Morning concluding session, return to Delhi.",
-          budget: 400,
-        },
-      ]
-    }
-  };
-
-  // Get the current itinerary based on selected destination
-  const currentItinerary = itineraries[destination as keyof typeof itineraries];
+  const [destinations, setDestinations] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedDestinationData, setSelectedDestinationData] = useState<any>(null);
+  
+  useEffect(() => {
+    const fetchDestinations = async () => {
+      setLoading(true);
+      try {
+        const allDestinations = await databaseService.getDestinations();
+        
+        let filteredDestinations;
+        if (selectedCategory === "all") {
+          filteredDestinations = allDestinations;
+        } else {
+          filteredDestinations = allDestinations.filter(
+            dest => dest.category === selectedCategory
+          );
+        }
+        
+        setDestinations(filteredDestinations);
+        
+        if (filteredDestinations.length > 0) {
+          if (destination && filteredDestinations.some(d => d.id === destination)) {
+          } else {
+            setDestination(filteredDestinations[0].id);
+          }
+        } else {
+          setDestination("");
+          setSelectedDestinationData(null);
+        }
+      } catch (error) {
+        console.error("Error fetching destinations:", error);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to load destinations. Please try again later.",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchDestinations();
+  }, [selectedCategory]);
+  
+  useEffect(() => {
+    if (!destination || destinations.length === 0) return;
+    
+    const selectedDest = destinations.find(dest => dest.id === destination);
+    if (!selectedDest) return;
+    
+    const itineraryData = {
+      title: selectedDest.title,
+      location: selectedDest.location,
+      totalCost: selectedDest.price,
+      days: selectedDest.days,
+      description: selectedDest.longDescription || selectedDest.description,
+      transportation: selectedDest.transportation?.map((transport: any) => ({
+        type: transport.type === "bus" ? "Bus" : "Train",
+        from: transport.from,
+        to: selectedDest.location,
+        cost: transport.price,
+        duration: transport.duration,
+        time: transport.schedule,
+        options: ["Standard", "Premium"]
+      })) || [],
+      accommodation: selectedDest.accommodation?.map((accom: any) => ({
+        type: accom.name,
+        location: accom.location,
+        cost: Math.round(selectedDest.price / selectedDest.days / 2),
+        perNight: true,
+        options: accom.amenities?.map((a: string) => a) || ["Standard Room", "Deluxe Room"]
+      })) || [],
+      dayWiseItinerary: selectedDest.itinerary?.map((day: any, index: number) => ({
+        day: index + 1,
+        title: day.title,
+        description: day.description,
+        budget: Math.round(selectedDest.price / selectedDest.days)
+      })) || []
+    };
+    
+    setSelectedDestinationData(itineraryData);
+  }, [destination, destinations]);
   
   const toggleExpand = (id: string) => {
     setExpanded(expanded === id ? null : id);
   };
 
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="flex justify-center items-center py-20">
+          <div className="animate-spin h-10 w-10 border-4 border-musafir-spiritual rounded-full border-t-transparent"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (destinations.length === 0) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center py-12 border border-border rounded-lg bg-card">
+          <AlertTriangle className="mx-auto h-12 w-12 text-yellow-500 mb-4" />
+          <h3 className="text-xl font-medium mb-2">No itineraries found</h3>
+          <p className="text-muted-foreground">
+            We couldn't find any itineraries matching the selected category.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6">Itinerary Details</h1>
-      
       <div className="mb-6 flex flex-col sm:flex-row gap-4">
         <Select value={destination} onValueChange={setDestination}>
-          <SelectTrigger className="w-full sm:w-[250px]">
+          <SelectTrigger className="w-full sm:w-[300px]">
             <SelectValue placeholder="Select destination" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="valley-of-flowers">Valley of Flowers Trek</SelectItem>
-            <SelectItem value="rishikesh-rafting">Rishikesh Rafting Experience</SelectItem>
-            <SelectItem value="meditation-retreat">Meditation Retreat</SelectItem>
+            {destinations.map(dest => (
+              <SelectItem key={dest.id} value={dest.id}>
+                {dest.title} ({dest.location})
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
         
@@ -206,33 +171,33 @@ const ItineraryDetails = () => {
         </Select>
       </div>
 
-      {currentItinerary && (
+      {selectedDestinationData && (
         <>
           <Card className="mb-8">
             <CardHeader>
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                 <div>
-                  <CardTitle className="text-2xl">{currentItinerary.title}</CardTitle>
-                  <p className="text-muted-foreground">{currentItinerary.location}</p>
+                  <CardTitle className="text-2xl">{selectedDestinationData.title}</CardTitle>
+                  <p className="text-muted-foreground">{selectedDestinationData.location}</p>
                 </div>
                 <div className="flex items-center gap-2 text-musafir-spiritual font-bold">
                   <IndianRupee className="h-5 w-5" />
-                  <span className="text-xl">{currentItinerary.totalCost}</span>
-                  <span className="text-sm text-muted-foreground font-normal">({currentItinerary.days} days)</span>
+                  <span className="text-xl">{selectedDestinationData.totalCost}</span>
+                  <span className="text-sm text-muted-foreground font-normal">({selectedDestinationData.days} days)</span>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
-              <p className="mb-4">{currentItinerary.description}</p>
+              <p className="mb-4">{selectedDestinationData.description}</p>
               
               <div className="flex flex-wrap gap-3 mt-4">
                 <div className="flex items-center gap-1 bg-musafir-light/60 text-musafir-trekking px-3 py-1 rounded-full text-sm">
                   <Calendar className="h-4 w-4" />
-                  <span>{currentItinerary.days} Days</span>
+                  <span>{selectedDestinationData.days} Days</span>
                 </div>
                 <div className="flex items-center gap-1 bg-musafir-light/60 text-musafir-spiritual px-3 py-1 rounded-full text-sm">
                   <IndianRupee className="h-4 w-4" />
-                  <span>Budget ₹{currentItinerary.totalCost}</span>
+                  <span>Budget ₹{selectedDestinationData.totalCost}</span>
                 </div>
               </div>
             </CardContent>
@@ -246,89 +211,101 @@ const ItineraryDetails = () => {
             </TabsList>
             
             <TabsContent value="day-by-day" className="space-y-4 mt-4">
-              {currentItinerary.dayWiseItinerary.map((day, index) => (
-                <Collapsible
-                  key={index}
-                  open={expanded === `day-${day.day}`}
-                  onOpenChange={() => toggleExpand(`day-${day.day}`)}
-                  className="border rounded-lg overflow-hidden"
-                >
-                  <CollapsibleTrigger className="flex items-center justify-between w-full p-4 hover:bg-muted/50">
-                    <div className="flex items-center">
-                      <div className="bg-musafir-spiritual text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">
-                        {day.day}
+              {selectedDestinationData.dayWiseItinerary.length > 0 ? (
+                selectedDestinationData.dayWiseItinerary.map((day: any, index: number) => (
+                  <Collapsible
+                    key={index}
+                    open={expanded === `day-${day.day}`}
+                    onOpenChange={() => toggleExpand(`day-${day.day}`)}
+                    className="border rounded-lg overflow-hidden"
+                  >
+                    <CollapsibleTrigger className="flex items-center justify-between w-full p-4 hover:bg-muted/50">
+                      <div className="flex items-center">
+                        <div className="bg-musafir-spiritual text-white rounded-full w-8 h-8 flex items-center justify-center mr-3">
+                          {day.day}
+                        </div>
+                        <div className="text-left">
+                          <h3 className="font-medium">{day.title}</h3>
+                        </div>
                       </div>
-                      <div className="text-left">
-                        <h3 className="font-medium">{day.title}</h3>
+                      <div className="flex items-center">
+                        <span className="mr-3 text-musafir-spiritual font-medium">₹{day.budget}</span>
+                        <ChevronDown className={`h-5 w-5 transition-transform ${expanded === `day-${day.day}` ? 'rotate-180' : ''}`} />
                       </div>
-                    </div>
-                    <div className="flex items-center">
-                      <span className="mr-3 text-musafir-spiritual font-medium">₹{day.budget}</span>
-                      <ChevronDown className={`h-5 w-5 transition-transform ${expanded === `day-${day.day}` ? 'rotate-180' : ''}`} />
-                    </div>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent className="p-4 pt-0 border-t">
-                    <p className="mb-3">{day.description}</p>
-                    <div className="flex items-center text-musafir-spiritual">
-                      <IndianRupee className="h-4 w-4 mr-1" />
-                      <span>Budget: ₹{day.budget}</span>
-                    </div>
-                  </CollapsibleContent>
-                </Collapsible>
-              ))}
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="p-4 pt-0 border-t">
+                      <p className="mb-3">{day.description}</p>
+                      <div className="flex items-center text-musafir-spiritual">
+                        <IndianRupee className="h-4 w-4 mr-1" />
+                        <span>Budget: ₹{day.budget}</span>
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                ))
+              ) : (
+                <div className="text-center py-6">
+                  <p className="text-muted-foreground">Day-by-day itinerary is not available for this destination.</p>
+                </div>
+              )}
             </TabsContent>
             
             <TabsContent value="transportation" className="mt-4">
               <Card>
                 <CardContent className="pt-6">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[100px]">Type</TableHead>
-                        <TableHead>Route</TableHead>
-                        <TableHead>Duration</TableHead>
-                        <TableHead>Time</TableHead>
-                        <TableHead>Options</TableHead>
-                        <TableHead className="text-right">Cost</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {currentItinerary.transportation.map((transport, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="font-medium">
-                            <div className="flex items-center">
-                              {transport.type === "Train" ? (
-                                <Train className="mr-2 h-4 w-4 text-musafir-spiritual" />
-                              ) : transport.type === "Bus" ? (
-                                <Bus className="mr-2 h-4 w-4 text-musafir-forest" />
-                              ) : (
-                                <Navigation className="mr-2 h-4 w-4 text-musafir-water" />
-                              )}
-                              {transport.type}
-                            </div>
-                          </TableCell>
-                          <TableCell>{transport.from} → {transport.to}</TableCell>
-                          <TableCell>{transport.duration}</TableCell>
-                          <TableCell>{transport.time}</TableCell>
-                          <TableCell>
-                            <Select>
-                              <SelectTrigger className="w-[140px]">
-                                <SelectValue placeholder="Select option" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {transport.options.map((option, idx) => (
-                                  <SelectItem key={idx} value={option.toLowerCase().replace(' ', '-')}>
-                                    {option}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </TableCell>
-                          <TableCell className="text-right">₹{transport.cost}</TableCell>
+                  {selectedDestinationData.transportation.length > 0 ? (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[100px]">Type</TableHead>
+                          <TableHead>Route</TableHead>
+                          <TableHead>Duration</TableHead>
+                          <TableHead>Time</TableHead>
+                          <TableHead>Options</TableHead>
+                          <TableHead className="text-right">Cost</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {selectedDestinationData.transportation.map((transport: any, index: number) => (
+                          <TableRow key={index}>
+                            <TableCell className="font-medium">
+                              <div className="flex items-center">
+                                {transport.type === "Train" ? (
+                                  <Train className="mr-2 h-4 w-4 text-musafir-spiritual" />
+                                ) : transport.type === "Bus" ? (
+                                  <Bus className="mr-2 h-4 w-4 text-musafir-forest" />
+                                ) : (
+                                  <Navigation className="mr-2 h-4 w-4 text-musafir-water" />
+                                )}
+                                {transport.type}
+                              </div>
+                            </TableCell>
+                            <TableCell>{transport.from} → {transport.to}</TableCell>
+                            <TableCell>{transport.duration}</TableCell>
+                            <TableCell>{transport.time}</TableCell>
+                            <TableCell>
+                              <Select>
+                                <SelectTrigger className="w-[140px]">
+                                  <SelectValue placeholder="Select option" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {transport.options.map((option: string, idx: number) => (
+                                    <SelectItem key={idx} value={option.toLowerCase().replace(' ', '-')}>
+                                      {option}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </TableCell>
+                            <TableCell className="text-right">₹{transport.cost}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  ) : (
+                    <div className="text-center py-6">
+                      <p className="text-muted-foreground">Transportation details are not available for this destination.</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
@@ -336,47 +313,53 @@ const ItineraryDetails = () => {
             <TabsContent value="accommodation" className="mt-4">
               <Card>
                 <CardContent className="pt-6">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-[150px]">Type</TableHead>
-                        <TableHead>Location</TableHead>
-                        <TableHead>Options</TableHead>
-                        <TableHead className="text-right">Cost</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {currentItinerary.accommodation.map((accom, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="font-medium">
-                            <div className="flex items-center">
-                              <Bed className="mr-2 h-4 w-4 text-musafir-trekking" />
-                              {accom.type}
-                            </div>
-                          </TableCell>
-                          <TableCell>{accom.location}</TableCell>
-                          <TableCell>
-                            <Select>
-                              <SelectTrigger className="w-[160px]">
-                                <SelectValue placeholder="Select option" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {accom.options.map((option, idx) => (
-                                  <SelectItem key={idx} value={option.toLowerCase().replace(' ', '-')}>
-                                    {option}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            ₹{accom.cost}
-                            {accom.perNight && <span className="text-sm text-muted-foreground">/night</span>}
-                          </TableCell>
+                  {selectedDestinationData.accommodation.length > 0 ? (
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-[150px]">Type</TableHead>
+                          <TableHead>Location</TableHead>
+                          <TableHead>Options</TableHead>
+                          <TableHead className="text-right">Cost</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {selectedDestinationData.accommodation.map((accom: any, index: number) => (
+                          <TableRow key={index}>
+                            <TableCell className="font-medium">
+                              <div className="flex items-center">
+                                <Bed className="mr-2 h-4 w-4 text-musafir-trekking" />
+                                {accom.type}
+                              </div>
+                            </TableCell>
+                            <TableCell>{accom.location}</TableCell>
+                            <TableCell>
+                              <Select>
+                                <SelectTrigger className="w-[160px]">
+                                  <SelectValue placeholder="Select option" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {accom.options.map((option: string, idx: number) => (
+                                    <SelectItem key={idx} value={option.toLowerCase().replace(' ', '-')}>
+                                      {option}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </TableCell>
+                            <TableCell className="text-right">
+                              ₹{accom.cost}
+                              {accom.perNight && <span className="text-sm text-muted-foreground">/night</span>}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  ) : (
+                    <div className="text-center py-6">
+                      <p className="text-muted-foreground">Accommodation details are not available for this destination.</p>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
@@ -392,7 +375,7 @@ const ItineraryDetails = () => {
               </PopoverTrigger>
               <PopoverContent>
                 <div className="space-y-2">
-                  <h4 className="font-medium">Travel Tips for {currentItinerary.title}</h4>
+                  <h4 className="font-medium">Travel Tips for {selectedDestinationData.title}</h4>
                   <ul className="text-sm list-disc pl-4 space-y-1">
                     <li>Book train tickets at least 1 month in advance</li>
                     <li>Carry sufficient cash as ATMs may not be available</li>

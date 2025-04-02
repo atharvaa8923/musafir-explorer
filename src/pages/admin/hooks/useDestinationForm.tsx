@@ -1,10 +1,9 @@
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import DestinationForm from '@/components/admin/destination-form';
 import { useNavigate } from 'react-router-dom';
 import databaseService from '@/services/databaseService';
 import { toast } from '@/components/ui/use-toast';
+import FormDialog from '../components/FormDialog';
 
 export function useDestinationForm(refreshData: () => void) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -61,27 +60,6 @@ export function useDestinationForm(refreshData: () => void) {
     navigate(`/destination/${id}`);
   };
 
-  // Component for the form dialog
-  const FormDialog = ({ destination, onSave, onCancel, isOpen, setIsOpen }) => (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-w-3xl">
-        <DialogHeader>
-          <DialogTitle>
-            {destination ? "Edit Destination" : "Add New Destination"}
-          </DialogTitle>
-        </DialogHeader>
-        <DestinationForm 
-          destination={destination} 
-          onSave={onSave} 
-          onCancel={onCancel} 
-        />
-      </DialogContent>
-    </Dialog>
-  );
-
-  // Attach the dialog component to the hook
-  useDestinationForm.FormDialog = FormDialog;
-
   return {
     isDialogOpen,
     selectedDestination,
@@ -90,6 +68,7 @@ export function useDestinationForm(refreshData: () => void) {
     closeForm,
     handleFormSave,
     handleDeleteDestination,
-    handleViewDestination
+    handleViewDestination,
+    FormDialog
   };
 }

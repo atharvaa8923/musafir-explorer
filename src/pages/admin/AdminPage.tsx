@@ -1,23 +1,46 @@
 
 import React, { useState, useEffect } from 'react';
-import Navbar from '@/components/Navbar';
-import AdminLogin from '@/components/admin/AdminLogin';
+import { useNavigate } from 'react-router-dom';
+import databaseService from '@/services/databaseService';
 import DestinationTable from './components/DestinationTable';
 import AdminHeader from './components/AdminHeader';
 import { useDestinationForm } from './hooks/useDestinationForm';
-import databaseService from '@/services/databaseService';
+import { toast } from '@/components/ui/use-toast';
+import AdminLogin from '@/components/admin/AdminLogin';
 
 const AdminPage = () => {
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [destinations, setDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const fetchDestinations = async () => {
+    setLoading(true);
+    try {
+      const data = await databaseService.getDestinations();
+      setDestinations(data);
+    } catch (error) {
+      console.error('Error fetching destinations:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to load destinations. Please try again later.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const { 
     isDialogOpen, 
-    selectedDestination,
+    selectedDestination, 
     openAddForm, 
     openEditForm, 
     closeForm, 
-    handleFormSave 
+    handleFormSave, 
+    handleDeleteDestination, 
+    handleViewDestination,
+    FormDialog
   } = useDestinationForm(fetchDestinations);
 
   useEffect(() => {
@@ -26,75 +49,77 @@ const AdminPage = () => {
       setIsAdmin(adminStatus);
       if (adminStatus) {
         fetchDestinations();
-      } else {
-        setLoading(false);
       }
     };
-    
+
     checkAdmin();
   }, []);
-
-  async function fetchDestinations() {
-    setLoading(true);
-    try {
-      const data = await databaseService.getDestinations();
-      setDestinations(data);
-    } catch (error) {
-      console.error("Error fetching destinations:", error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  const handleLoginSuccess = () => {
-    setIsAdmin(true);
-    fetchDestinations();
-  };
 
   const handleLogout = async () => {
     await databaseService.logout();
     setIsAdmin(false);
+    toast({
+      title: "Logged out",
+      description: "You have been successfully logged out.",
+    });
   };
+
+  const handleLogin = async (username: string, password: string) => {
+    const success = await databaseService.login(username, password);
+    if (success) {
+      setIsAdmin(true);
+      fetchDestinations();
+      toast({
+        title: "Welcome",
+        description: "You have successfully logged in as admin.",
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: "Invalid username or password.",
+      });
+    }
+    return success;
+  };
+
+  if (isAdmin === null) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="flex justify-center items-center min-h-[50vh]">
+          <div className="animate-spin h-8 w-8 border-4 border-musafir-spiritual rounded-full border-t-transparent"></div>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAdmin) {
     return (
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-        <main className="flex-1 py-10">
-          <div className="container mx-auto px-4">
-            <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
-            <AdminLogin onLoginSuccess={handleLoginSuccess} />
-          </div>
-        </main>
+      <div className="container mx-auto p-6">
+        <AdminLogin onLogin={handleLogin} />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
-      <main className="flex-1 py-10">
-        <div className="container mx-auto px-4">
-          <AdminHeader onAddDestination={openAddForm} onLogout={handleLogout} />
-          
-          <DestinationTable 
-            destinations={destinations}
-            loading={loading}
-            onEdit={openEditForm}
-            onDelete={fetchDestinations}
-          />
-        </div>
-      </main>
+    <div className="container mx-auto p-6">
+      <AdminHeader onAddDestination={openAddForm} onLogout={handleLogout} />
       
-      {isDialogOpen && (
-        <useDestinationForm.FormDialog 
-          destination={selectedDestination} 
-          onSave={handleFormSave} 
-          onCancel={closeForm} 
-          isOpen={isDialogOpen}
-          setIsOpen={closeForm}
-        />
-      )}
+      <DestinationTable 
+        destinations={destinations} 
+        loading={loading} 
+        onEdit={openEditForm}
+        onDelete={handleDeleteDestination}
+        onView={handleViewDestination}
+      />
+      
+      <FormDialog
+        destination={selectedDestination}
+        onSave={handleFormSave}
+        onCancel={closeForm}
+        isOpen={isDialogOpen}
+        setIsOpen={setIsDialogOpen}
+      />
     </div>
   );
 };
