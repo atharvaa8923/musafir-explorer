@@ -1,11 +1,11 @@
 
-import { Destination, Destinations } from './types';
 import { trekkingDestinations } from './trekking-destinations';
 import { hikingDestinations } from './hiking-destinations';
 import { raftingDestinations } from './rafting-destinations';
 import { meditationDestinations } from './meditation-destinations';
 import { religiousDestinations } from './religious-destinations';
 import { newDestinations } from './new-destinations';
+import { Destination, Destinations } from './types';
 
 // Export all destination categories
 export { trekkingDestinations } from './trekking-destinations';
@@ -14,7 +14,7 @@ export { raftingDestinations } from './rafting-destinations';
 export { meditationDestinations } from './meditation-destinations';
 export { religiousDestinations } from './religious-destinations';
 export { newDestinations } from './new-destinations';
-export { Destination, Destinations } from './types';
+export type { Destination, Destinations } from './types';
 
 // Combine all destinations into a single array
 export const destinations: Destination[] = [

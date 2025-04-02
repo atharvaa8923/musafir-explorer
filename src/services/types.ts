@@ -1,8 +1,8 @@
 
-import { destinations } from "@/data/destinations";
+import { Destination as DestinationType, Destinations as DestinationsType } from "@/data/types";
 
-export type Destination = typeof destinations[0];
-export type Destinations = typeof destinations;
+export type Destination = DestinationType;
+export type Destinations = DestinationsType;
 
 export interface DatabaseService {
   getDestinations: () => Promise<Destinations>;

@@ -9,7 +9,7 @@ import { Calendar, IndianRupee, MapPin, Clock, Bus, TrainFront, Info, Utensils, 
 import DestinationMap from "@/components/DestinationMap";
 import TransportationOptions from "@/components/TransportationOptions";
 import { useToast } from "@/components/ui/use-toast";
-import { destinations } from "@/data/destinations";
+import { destinations } from "@/data";
 
 const DestinationDetail = () => {
   const { id } = useParams();

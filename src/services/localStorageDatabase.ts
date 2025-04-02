@@ -1,4 +1,5 @@
-import { destinations } from "@/data/destinations";
+
+import { destinations } from "@/data";
 import { toast } from "@/components/ui/use-toast";
 import { DatabaseService, Destination, Destinations, SearchFilters } from './types';
 import { getFromStorage, saveToStorage } from './storageUtils';
