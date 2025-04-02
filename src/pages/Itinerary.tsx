@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import ItineraryDetails from "@/components/ItineraryDetails";
 import { Button } from "@/components/ui/button";
-import { Hiking, Compass, Map, Tent } from "lucide-react";
+import { Mountain, Compass, Map, Tent } from "lucide-react";
 
 const Itinerary = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -56,7 +56,7 @@ const Itinerary = () => {
               onClick={() => handleCategoryChange("hiking")}
               className={selectedCategory === "hiking" ? "bg-musafir-forest" : ""}
             >
-              <Hiking className="mr-2 h-4 w-4" />
+              <Mountain className="mr-2 h-4 w-4" />
               Hiking
             </Button>
           </div>

@@ -12,15 +12,10 @@ interface DestinationTableProps {
   loading: boolean;
   onEdit: (destination: any) => void;
   onDelete: () => void;
+  onView: (id: string) => void;
 }
 
-const DestinationTable = ({ destinations, loading, onEdit, onDelete }: DestinationTableProps) => {
-  const navigate = useNavigate();
-
-  const handleViewDestination = (id: string) => {
-    navigate(`/destination/${id}`);
-  };
-
+const DestinationTable = ({ destinations, loading, onEdit, onDelete, onView }: DestinationTableProps) => {
   const handleDeleteDestination = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this destination?")) {
       try {
@@ -30,7 +25,7 @@ const DestinationTable = ({ destinations, loading, onEdit, onDelete }: Destinati
             title: "Success",
             description: "Destination deleted successfully",
           });
-          onDelete();
+          onDelete(); // Call the refresh callback without arguments
         } else {
           toast({
             variant: "destructive",
@@ -96,7 +91,7 @@ const DestinationTable = ({ destinations, loading, onEdit, onDelete }: Destinati
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    onClick={() => handleViewDestination(destination.id)}
+                    onClick={() => onView(destination.id)}
                   >
                     View
                   </Button>

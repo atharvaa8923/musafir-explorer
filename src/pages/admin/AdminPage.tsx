@@ -7,6 +7,7 @@ import AdminHeader from './components/AdminHeader';
 import { useDestinationForm } from './hooks/useDestinationForm';
 import { toast } from '@/components/ui/use-toast';
 import AdminLogin from '@/components/admin/AdminLogin';
+import FormDialog from './components/FormDialog';
 
 const AdminPage = () => {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
@@ -33,14 +34,14 @@ const AdminPage = () => {
 
   const { 
     isDialogOpen, 
+    setIsDialogOpen,
     selectedDestination, 
     openAddForm, 
     openEditForm, 
     closeForm, 
     handleFormSave, 
     handleDeleteDestination, 
-    handleViewDestination,
-    FormDialog
+    handleViewDestination
   } = useDestinationForm(fetchDestinations);
 
   useEffect(() => {
@@ -109,7 +110,7 @@ const AdminPage = () => {
         destinations={destinations} 
         loading={loading} 
         onEdit={openEditForm}
-        onDelete={handleDeleteDestination}
+        onDelete={fetchDestinations}
         onView={handleViewDestination}
       />
       

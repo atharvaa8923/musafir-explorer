@@ -7,10 +7,10 @@ import { toast } from '@/components/ui/use-toast';
 import databaseService from '@/services/databaseService';
 
 interface AdminLoginProps {
-  onLoginSuccess: () => void;
+  onLogin: (username: string, password: string) => Promise<boolean>;
 }
 
-const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
+const AdminLogin = ({ onLogin }: AdminLoginProps) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,15 +30,9 @@ const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
     setLoading(true);
     
     try {
-      const success = await databaseService.login(username, password);
+      const success = await onLogin(username, password);
       
-      if (success) {
-        toast({
-          title: "Success",
-          description: "You are now logged in as admin",
-        });
-        onLoginSuccess();
-      } else {
+      if (!success) {
         toast({
           variant: "destructive",
           title: "Authentication Failed",
@@ -60,7 +54,7 @@ const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
     <Card className="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle>Admin Login</CardTitle>
-        <CardDescription>Login with your admin credentials (admin/musafir123)</CardDescription>
+        <CardDescription>Login with your admin credentials (admin/admin)</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleLogin} className="space-y-4">

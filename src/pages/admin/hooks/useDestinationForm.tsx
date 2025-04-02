@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import databaseService from '@/services/databaseService';
 import { toast } from '@/components/ui/use-toast';
-import FormDialog from '../components/FormDialog';
 
 export function useDestinationForm(refreshData: () => void) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -62,13 +61,13 @@ export function useDestinationForm(refreshData: () => void) {
 
   return {
     isDialogOpen,
+    setIsDialogOpen,
     selectedDestination,
     openAddForm,
     openEditForm,
     closeForm,
     handleFormSave,
     handleDeleteDestination,
-    handleViewDestination,
-    FormDialog
+    handleViewDestination
   };
 }
