@@ -7,6 +7,10 @@ export interface FiltersState {
   budget: [number, number];
   days: [number, number];
   categories: string[];
+  difficulty?: string;
+  season?: string;
+  amenities?: string[];
+  transportation?: string[];
 }
 
 interface UseFiltersReturn {
@@ -19,6 +23,10 @@ interface UseFiltersReturn {
   handleCategoryChange: (value: string) => void;
   handleCategoryClear: (e: React.MouseEvent, category: string) => void;
   handleClearAll: () => void;
+  handleDifficultyChange: (value: string) => void;
+  handleSeasonChange: (value: string) => void;
+  handleAmenitiesChange: (amenities: string[]) => void;
+  handleTransportationChange: (transportation: string[]) => void;
 }
 
 export const useFilters = (
@@ -28,6 +36,10 @@ export const useFilters = (
     budget: [0, 5000],
     days: [1, 14],
     categories: [],
+    difficulty: '',
+    season: '',
+    amenities: [],
+    transportation: [],
   },
   onFilterChange?: (filters: FiltersState) => void
 ): UseFiltersReturn => {
@@ -97,6 +109,30 @@ export const useFilters = (
     onFilterChange?.(newFilters);
   };
 
+  const handleDifficultyChange = (value: string) => {
+    const newFilters = { ...filters, difficulty: value };
+    setFilters(newFilters);
+    onFilterChange?.(newFilters);
+  };
+
+  const handleSeasonChange = (value: string) => {
+    const newFilters = { ...filters, season: value };
+    setFilters(newFilters);
+    onFilterChange?.(newFilters);
+  };
+
+  const handleAmenitiesChange = (amenities: string[]) => {
+    const newFilters = { ...filters, amenities };
+    setFilters(newFilters);
+    onFilterChange?.(newFilters);
+  };
+
+  const handleTransportationChange = (transportation: string[]) => {
+    const newFilters = { ...filters, transportation };
+    setFilters(newFilters);
+    onFilterChange?.(newFilters);
+  };
+
   const handleClearAll = () => {
     const resetFilters: FiltersState = {
       searchQuery: '',
@@ -104,6 +140,10 @@ export const useFilters = (
       budget: [0, 5000],
       days: [1, 14],
       categories: [],
+      difficulty: '',
+      season: '',
+      amenities: [],
+      transportation: [],
     };
     setFilters(resetFilters);
     onFilterChange?.(resetFilters);
@@ -119,5 +159,11 @@ export const useFilters = (
     handleCategoryChange,
     handleCategoryClear,
     handleClearAll,
+    handleDifficultyChange,
+    handleSeasonChange,
+    handleAmenitiesChange,
+    handleTransportationChange,
   };
 };
+
+export default useFilters;

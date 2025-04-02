@@ -1,14 +1,22 @@
 
 import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
-import { Search, IndianRupee } from 'lucide-react';
+import { Search, IndianRupee, Filter } from 'lucide-react';
 import LocationSelector from './LocationSelector';
 import RangeSlider from './RangeSlider';
 import CategorySelector from './CategorySelector';
 import ActiveFilters from './ActiveFilters';
+import AdvancedFilters from './AdvancedFilters';
 import { useFilters, FiltersState } from '@/hooks/useFilters';
 import databaseService from '@/services/databaseService';
 import { toast } from '@/components/ui/use-toast';
+import { Button } from '@/components/ui/button';
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import useTranslation from '@/hooks/useTranslation';
 
 const categories = [
   { label: 'Trekking', value: 'trekking', color: 'bg-musafir-trekking' },
@@ -34,6 +42,8 @@ interface SearchAndFilterProps {
 }
 
 const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
+  const { t } = useTranslation();
+  
   const {
     filters,
     handleSearchChange,
@@ -48,12 +58,29 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
   
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  
+  // Advanced filters
+  const [difficulty, setDifficulty] = useState('');
+  const [season, setSeason] = useState('');
+  const [amenities, setAmenities] = useState<string[]>([]);
+  const [transportation, setTransportation] = useState<string[]>([]);
 
   // Function to fetch filtered destinations
   const fetchFilteredDestinations = async () => {
     try {
       setIsLoading(true);
-      const results = await databaseService.searchDestinations(filters);
+      
+      // Combine basic and advanced filters
+      const allFilters = {
+        ...filters,
+        difficulty: difficulty || undefined,
+        season: season || undefined,
+        amenities: amenities.length > 0 ? amenities : undefined,
+        transportation: transportation.length > 0 ? transportation : undefined
+      };
+      
+      const results = await databaseService.searchDestinations(allFilters);
       console.log('Filtered destinations:', results);
       
       // Show toast notification with results count
@@ -73,20 +100,32 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
     }
   };
 
-  // Fetch results when filters change
+  // Update filters when advanced filters change
   useEffect(() => {
-    if (filters.searchQuery || filters.location || 
-        filters.categories.length > 0 || 
-        filters.budget[0] > 0 || filters.budget[1] < 5000 ||
-        filters.days[0] > 1 || filters.days[1] < 14) {
-      // Add a small delay to avoid too many requests while typing
-      const handler = setTimeout(() => {
+    const handler = setTimeout(() => {
+      if (difficulty || season || amenities.length > 0 || transportation.length > 0 ||
+          filters.searchQuery || filters.location || 
+          filters.categories.length > 0 || 
+          filters.budget[0] > 0 || filters.budget[1] < 5000 ||
+          filters.days[0] > 1 || filters.days[1] < 14) {
         fetchFilteredDestinations();
-      }, 500);
-      
-      return () => clearTimeout(handler);
-    }
-  }, [filters]);
+      }
+    }, 500);
+    
+    return () => clearTimeout(handler);
+  }, [filters, difficulty, season, amenities, transportation]);
+
+  const handleAdvancedFiltersClear = () => {
+    setDifficulty('');
+    setSeason('');
+    setAmenities([]);
+    setTransportation([]);
+  };
+
+  const handleAllFiltersClear = () => {
+    handleClearAll();
+    handleAdvancedFiltersClear();
+  };
 
   return (
     <div className="space-y-6">
@@ -94,7 +133,7 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" size={18} />
         <Input
           className="pl-10 pr-4 py-2"
-          placeholder="Search destinations..."
+          placeholder={t('search')}
           value={filters.searchQuery}
           onChange={handleSearchChange}
           disabled={isLoading}
@@ -117,7 +156,7 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
         
         {/* Budget Range Slider */}
         <RangeSlider
-          label="Budget (₹)"
+          label={t('budget')}
           value={filters.budget}
           min={0}
           max={5000}
@@ -128,7 +167,7 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
         
         {/* Duration Range Slider */}
         <RangeSlider
-          label="Duration (days)"
+          label={t('duration')}
           value={filters.days}
           min={1}
           max={14}
@@ -146,11 +185,56 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
         onCategoryClear={handleCategoryClear}
       />
       
+      {/* Advanced Filters Collapsible */}
+      <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced} className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-medium">Advanced Filters</h3>
+          <CollapsibleTrigger asChild>
+            <Button variant="ghost" size="sm" className="p-0 h-8 w-8">
+              <Filter size={16} />
+              <span className="sr-only">Toggle advanced filters</span>
+            </Button>
+          </CollapsibleTrigger>
+        </div>
+        <CollapsibleContent className="pt-2">
+          <div className="border rounded-md p-4">
+            <AdvancedFilters 
+              difficulty={difficulty}
+              setDifficulty={setDifficulty}
+              season={season}
+              setSeason={setSeason}
+              amenities={amenities}
+              setAmenities={setAmenities}
+              transportation={transportation}
+              setTransportation={setTransportation}
+            />
+            
+            {(difficulty || season || amenities.length > 0 || transportation.length > 0) && (
+              <div className="mt-4 flex justify-end">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleAdvancedFiltersClear}
+                >
+                  Clear Advanced Filters
+                </Button>
+              </div>
+            )}
+          </div>
+        </CollapsibleContent>
+      </Collapsible>
+      
       {/* Selected filters summary */}
       <ActiveFilters 
         filters={filters}
         clearLocation={clearLocation}
-        handleClearAll={handleClearAll}
+        handleClearAll={handleAllFiltersClear}
+        advancedFilters={{
+          difficulty,
+          season,
+          amenities,
+          transportation
+        }}
       />
     </div>
   );
