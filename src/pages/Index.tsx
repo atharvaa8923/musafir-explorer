@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
@@ -7,22 +6,24 @@ import FeatureCard from "@/components/FeatureCard";
 import WeatherWidget from "@/components/WeatherWidget";
 import BudgetTracker from "@/components/BudgetTracker";
 import PackingList from "@/components/PackingList";
+import ChatBot from "@/components/ChatBot";
 import { Map, MessageCircle, Wallet, Backpack, CloudSun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast";
 import databaseService from "@/services/databaseService";
+import useTranslation from "@/hooks/useTranslation";
 
 const Index = () => {
   const [featuredDestinations, setFeaturedDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const loadDestinations = async () => {
       try {
         setLoading(true);
         const allDestinations = await databaseService.getDestinations();
-        // Get the first 6 destinations to display on the homepage
         setFeaturedDestinations(allDestinations.slice(0, 6));
         
         toast({
@@ -160,29 +161,20 @@ const Index = () => {
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center gap-8">
               <div className="md:w-1/2">
-                <h2 className="text-3xl font-bold mb-4">Multilingual Travel Assistant</h2>
+                <h2 className="text-3xl font-bold mb-4">{t("travel_assistant")}</h2>
                 <p className="text-muted-foreground mb-6">
-                  Get instant information about destinations, travel tips, and local insights in your preferred language
+                  {t("budget_friendly")}
                 </p>
-                <Button className="bg-musafir-meditation hover:bg-musafir-meditation/90">
-                  <MessageCircle className="mr-2" size={18} />
-                  Start Chatting
-                </Button>
               </div>
               <div className="md:w-1/2 bg-card rounded-lg p-6 border border-border">
                 <div className="flex justify-end mb-4">
                   <div className="bg-musafir-meditation/20 text-musafir-meditation p-3 rounded-lg rounded-tr-none max-w-xs">
-                    <p>Tell me about the best time to visit Valley of Flowers</p>
+                    <p>{t("type_message")}</p>
                   </div>
                 </div>
                 <div className="mb-4">
                   <div className="bg-muted p-3 rounded-lg rounded-tl-none max-w-xs">
-                    <p>The best time to visit Valley of Flowers is from July to September when the alpine flowers are in full bloom. The park is closed during winter months due to heavy snowfall.</p>
-                  </div>
-                </div>
-                <div className="flex justify-end">
-                  <div className="bg-musafir-meditation/20 text-musafir-meditation p-3 rounded-lg rounded-tr-none max-w-xs">
-                    <p>What's the budget for a 3-day trip?</p>
+                    <p>{t("welcome_message")}</p>
                   </div>
                 </div>
               </div>
@@ -190,6 +182,8 @@ const Index = () => {
           </div>
         </section>
       </main>
+      
+      <ChatBot />
       
       <footer className="bg-musafir-brown text-white py-8">
         <div className="container mx-auto px-4">

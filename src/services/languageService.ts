@@ -1,4 +1,3 @@
-
 import { LanguageService, SupportedLanguage } from './types';
 
 // Simple translations for demonstration
@@ -47,7 +46,13 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     time: "Time",
     options: "Options",
     cost: "Cost",
-    type: "Type"
+    type: "Type",
+    // Chat Assistant translations
+    travel_assistant: "Travel Assistant",
+    type_message: "Type your message...",
+    welcome_message: "Hello! I'm your travel assistant. Ask me about destinations, budget tips, transportation, or accommodation for your solo adventure in India.",
+    error: "Error",
+    chat_error: "Sorry, there was an error processing your request. Please try again."
   },
   hi: {
     home: "होम",
@@ -93,7 +98,13 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     time: "समय",
     options: "विकल्प",
     cost: "कीमत",
-    type: "प्रकार"
+    type: "प्रकार",
+    // Chat Assistant translations
+    travel_assistant: "यात्रा सहायक",
+    type_message: "अपना संदेश लिखें...",
+    welcome_message: "नमस्ते! मैं आपका यात्रा सहायक हूं। भारत में अपनी एकल यात्रा के लिए गंतव्यों, बजट टिप्स, परिवहन, या आवास के बारे में मुझसे पूछें।",
+    error: "त्रुटि",
+    chat_error: "क्षमा करें, आपके अनुरोध को संसाधित करने में एक त्रुटि हुई थी। कृपया पुनः प्रयास करें।"
   },
   ta: {
     home: "முகப்பு",
@@ -139,7 +150,13 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     time: "நேரம்",
     options: "விருப்பங்கள்",
     cost: "விலை",
-    type: "வகை"
+    type: "வகை",
+    // Chat Assistant translations
+    travel_assistant: "பயண உதவியாளர்",
+    type_message: "உங்கள் செய்தியை உள்ளிடவும்...",
+    welcome_message: "வணக்கம்! நான் உங்கள் பயண உதவியாளர். இந்தியாவில் உங்கள் தனிப்பட்ட பயணத்திற்கான இடங்கள், பட்ஜெட் குறிப்புகள், போக்குவரத்து அல்லது தங்குமிடம் பற்றி என்னிடம் கேளுங்கள்.",
+    error: "பிழை",
+    chat_error: "மன்னிக்கவும், உங்கள் கோரிக்கையை செயலாக்குவதில் பிழை ஏற்பட்டது. தயவுசெய்து மீண்டும் முயற்சிக்கவும்."
   },
   te: {
     home: "హోమ్",
@@ -185,7 +202,13 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     time: "సమయం",
     options: "ఎంపికలు",
     cost: "ధర",
-    type: "రకం"
+    type: "రకం",
+    // Chat Assistant translations
+    travel_assistant: "ప్రయాణ సహాయకుడు",
+    type_message: "మీ సందేశాన్ని టైప్ చేయండి...",
+    welcome_message: "హలో! నేను మీ ప్రయాణ సహాయకుడిని. భారతదేశంలో మీ సోలో అడ్వెంచర్ కోసం గమ్యస్థానాలు, బడ్జెట్ చిట్కాలు, రవాణా లేదా వసతి గురించి నన్ను అడగండి.",
+    error: "లోపం",
+    chat_error: "క్షమించండి, మీ అభ్యర్థనను ప్రాసెస్ చేయడంలో లోపం ఉంది. దయచేసి మళ్లీ ప్రయత్నించండి."
   },
   bn: {
     home: "হোম",
@@ -231,7 +254,13 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     time: "সময়",
     options: "বিকল্পগুলি",
     cost: "খরচ",
-    type: "ধরন"
+    type: "ধরন",
+    // Chat Assistant translations
+    travel_assistant: "ভ্রমণ সহকারী",
+    type_message: "আপনার বার্তা টাইপ করুন...",
+    welcome_message: "হ্যালো! আমি আপনার ভ্রমণ সহকারী। ভারতে আপনার একক অ্যাডভেঞ্চারের জন্য গন্তব্য, বাজেট টিপস, পরিবহন, বা থাকার জায়গা সম্পর্কে আমাকে জিজ্ঞাসা করুন।",
+    error: "ত্রুটি",
+    chat_error: "দুঃখিত, আপনার অনুরোধ প্রক্রিয়াকরণে একটি ত্রুটি ছিল। অনুগ্রহ করে আবার চেষ্টা করুন।"
   },
   mr: {
     home: "होम",
@@ -277,7 +306,13 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     time: "वेळ",
     options: "पर्याय",
     cost: "किंमत",
-    type: "प्रकार"
+    type: "प्रकार",
+    // Chat Assistant translations
+    travel_assistant: "प्रवास सहाय्यक",
+    type_message: "आपला संदेश टाइप करा...",
+    welcome_message: "नमस्कार! मी तुमचा प्रवास सहाय्यक आहे. भारतात तुमच्या एकट्याच्या साहसासाठी गंतव्यस्थाने, बजेट टिप्स, वाहतूक किंवा निवास याबद्दल मला विचारा.",
+    error: "त्रुटी",
+    chat_error: "क्षमस्व, तुमची विनंती प्रक्रिया करण्यात त्रुटी आली. कृपया पुन्हा प्रयत्न करा."
   }
 };
 
@@ -348,4 +383,3 @@ class LanguageServiceImpl implements LanguageService {
 // Create and export a singleton instance
 const languageService: LanguageService = new LanguageServiceImpl();
 export default languageService;
-
