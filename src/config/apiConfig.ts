@@ -11,7 +11,13 @@ export const API_KEYS = {
 export const API_ENDPOINTS = {
   DESTINATIONS: 'https://api.musafir-travel.example.com/v1/destinations',
   WEATHER: 'https://api.openweathermap.org/data/2.5',
-  MAPS: 'https://api.mapbox.com/geocoding/v5/mapbox.places',
+  MAPS: {
+    GEOCODING: 'https://api.mapbox.com/geocoding/v5/mapbox.places',
+    DIRECTIONS: 'https://api.mapbox.com/directions/v5/mapbox',
+    STATIC: 'https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/static',
+    TILES: 'https://api.mapbox.com/v4/mapbox.outdoors',
+    OFFLINE: 'https://api.mapbox.com/downloads/v1'
+  },
   TRANSPORTATION: {
     BUS: 'https://api.musafir-travel.example.com/v1/transportation/bus',
     TRAIN: 'https://api.musafir-travel.example.com/v1/transportation/train'

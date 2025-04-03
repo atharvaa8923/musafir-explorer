@@ -1,24 +1,35 @@
-
 import React from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, IndianRupee, MapPin, Clock, Bus, TrainFront, Info, Utensils, Hotel, Camera } from "lucide-react";
+import { Calendar, IndianRupee, MapPin, Clock, Bus, TrainFront, Info, Utensils, Hotel, Camera, Navigation } from "lucide-react";
 import DestinationMap from "@/components/DestinationMap";
 import TransportationOptions from "@/components/TransportationOptions";
 import { useToast } from "@/components/ui/use-toast";
 import { destinations } from "@/data";
+import useDestination from "@/hooks/useDestination";
 
 const DestinationDetail = () => {
   const { id } = useParams();
   const { toast } = useToast();
+  const { destination, loading, error } = useDestination(id || '');
   
-  // Find the destination by id
-  const destination = destinations.find(d => d.id === id);
+  const destinationData = destination || destinations.find(d => d.id === id);
   
-  if (!destination) {
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <main className="flex-1 container mx-auto px-4 py-12 flex items-center justify-center">
+          <div className="animate-spin h-8 w-8 border-4 border-musafir-spiritual rounded-full border-t-transparent"></div>
+        </main>
+      </div>
+    );
+  }
+  
+  if (error || !destinationData) {
     return (
       <div className="min-h-screen flex flex-col">
         <Navbar />
@@ -38,50 +49,58 @@ const DestinationDetail = () => {
   const handleBookNow = () => {
     toast({
       title: "Booking initiated",
-      description: "Your booking for " + destination.title + " has been initiated.",
+      description: "Your booking for " + destinationData.title + " has been initiated.",
     });
   };
+  
+  const pointsOfInterest = destinationData.itinerary
+    ? destinationData.itinerary
+        .flatMap(day => day.locations || [])
+        .filter(location => location && location.coordinates)
+        .map(location => ({
+          coordinates: location.coordinates as [number, number],
+          title: location.name,
+          description: location.description
+        }))
+    : [];
 
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main className="flex-1">
-        {/* Hero Section */}
         <div className="relative h-[50vh]">
           <img 
-            src={destination.image} 
-            alt={destination.title} 
+            src={destinationData.image} 
+            alt={destinationData.title} 
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
           <div className="absolute bottom-0 left-0 right-0 p-6">
             <div className="container mx-auto">
-              <Badge className={`mb-3 ${destination.categoryColor} hover:${destination.categoryColor}`}>
-                {destination.categoryLabel}
+              <Badge className={`mb-3 ${destinationData.categoryColor} hover:${destinationData.categoryColor}`}>
+                {destinationData.categoryLabel}
               </Badge>
-              <h1 className="text-4xl font-bold text-white mb-2">{destination.title}</h1>
+              <h1 className="text-4xl font-bold text-white mb-2">{destinationData.title}</h1>
               <div className="flex items-center text-white/80 mb-2">
                 <MapPin size={18} className="mr-1" />
-                <span>{destination.location}</span>
+                <span>{destinationData.location}</span>
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex items-center text-white/80">
                   <IndianRupee size={18} className="mr-1" />
-                  <span className="font-medium">{destination.price}</span>
+                  <span className="font-medium">{destinationData.price}</span>
                 </div>
                 <div className="flex items-center text-white/80">
                   <Calendar size={18} className="mr-1" />
-                  <span>{destination.days} days</span>
+                  <span>{destinationData.days} days</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
         
-        {/* Content Section */}
         <div className="container mx-auto px-4 py-10">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column: Details */}
             <div className="lg:col-span-2">
               <Tabs defaultValue="overview">
                 <TabsList className="mb-6">
@@ -89,19 +108,20 @@ const DestinationDetail = () => {
                   <TabsTrigger value="itinerary">Itinerary</TabsTrigger>
                   <TabsTrigger value="accommodation">Accommodation</TabsTrigger>
                   <TabsTrigger value="gallery">Gallery</TabsTrigger>
+                  <TabsTrigger value="routes">Routes & Maps</TabsTrigger>
                 </TabsList>
                 
                 <TabsContent value="overview" className="space-y-6">
                   <div>
-                    <h2 className="text-2xl font-semibold mb-4">About {destination.title}</h2>
-                    <p className="mb-4">{destination.description}</p>
-                    <p>{destination.longDescription}</p>
+                    <h2 className="text-2xl font-semibold mb-4">About {destinationData.title}</h2>
+                    <p className="mb-4">{destinationData.description}</p>
+                    <p>{destinationData.longDescription}</p>
                   </div>
                   
                   <div>
                     <h3 className="text-xl font-semibold mb-3">Highlights</h3>
                     <ul className="space-y-2">
-                      {destination.highlights.map((highlight, index) => (
+                      {destinationData.highlights.map((highlight, index) => (
                         <li key={index} className="flex items-start">
                           <Info size={18} className="mr-2 text-musafir-spiritual flex-shrink-0 mt-1" />
                           <span>{highlight}</span>
@@ -114,14 +134,14 @@ const DestinationDetail = () => {
                     <h3 className="text-xl font-semibold mb-3">Best Time to Visit</h3>
                     <div className="flex items-start">
                       <Clock size={18} className="mr-2 text-musafir-spiritual flex-shrink-0 mt-1" />
-                      <span>{destination.bestTimeToVisit}</span>
+                      <span>{destinationData.bestTimeToVisit}</span>
                     </div>
                   </div>
                 </TabsContent>
                 
                 <TabsContent value="itinerary" className="space-y-6">
                   <h2 className="text-2xl font-semibold mb-4">Day-by-Day Itinerary</h2>
-                  {destination.itinerary.map((day, index) => (
+                  {destinationData.itinerary.map((day, index) => (
                     <div key={index} className="border border-border rounded-lg p-4 mb-4">
                       <h3 className="text-lg font-semibold mb-2">Day {index + 1}: {day.title}</h3>
                       <p className="mb-3">{day.description}</p>
@@ -156,7 +176,7 @@ const DestinationDetail = () => {
                 
                 <TabsContent value="accommodation" className="space-y-6">
                   <h2 className="text-2xl font-semibold mb-4">Accommodation Details</h2>
-                  {destination.accommodation.map((item, index) => (
+                  {destinationData.accommodation.map((item, index) => (
                     <div key={index} className="border border-border rounded-lg p-4 mb-4">
                       <h3 className="text-lg font-semibold mb-2">{item.name}</h3>
                       <p className="mb-2">{item.description}</p>
@@ -181,36 +201,91 @@ const DestinationDetail = () => {
                 <TabsContent value="gallery" className="space-y-6">
                   <h2 className="text-2xl font-semibold mb-4">Photo Gallery</h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {destination.gallery.map((image, index) => (
+                    {destinationData.gallery.map((image, index) => (
                       <div key={index} className="aspect-square relative rounded-lg overflow-hidden">
                         <img 
                           src={image} 
-                          alt={`${destination.title} - Photo ${index + 1}`} 
+                          alt={`${destinationData.title} - Photo ${index + 1}`} 
                           className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
                         />
                       </div>
                     ))}
                   </div>
                 </TabsContent>
+                
+                <TabsContent value="routes" className="space-y-6">
+                  <h2 className="text-2xl font-semibold mb-4">Routes & Offline Maps</h2>
+                  <p className="mb-6">
+                    View recommended routes and download maps for offline use during your journey to {destinationData.title}.
+                  </p>
+                  
+                  <div className="bg-card border border-border rounded-lg overflow-hidden">
+                    <div className="p-4">
+                      <h3 className="text-lg font-semibold mb-2 flex items-center">
+                        <Navigation className="mr-2 text-musafir-spiritual" size={20} />
+                        Interactive Route Map
+                      </h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Explore the area and view routes to key points of interest. Download the map for offline use during your travels.
+                      </p>
+                    </div>
+                    
+                    <div className="h-[400px] relative">
+                      <DestinationMap 
+                        location={destinationData.coordinates} 
+                        title={destinationData.title}
+                        showRoutes={true}
+                        pointsOfInterest={pointsOfInterest}
+                      />
+                    </div>
+                    
+                    <div className="p-4 border-t border-border">
+                      <h4 className="font-medium mb-2">Map Instructions:</h4>
+                      <ul className="list-disc pl-5 space-y-1 text-sm">
+                        <li>Click "Download Map" to save this area for offline use</li>
+                        <li>Use the "Show Route" buttons to view directions to each point of interest</li>
+                        <li>Tap the markers to see information about each location</li>
+                        <li>Once downloaded, this map will be available even without internet connection</li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-6">
+                    <h3 className="text-xl font-semibold mb-3">Key Locations</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {pointsOfInterest.map((poi, index) => (
+                        <div key={index} className="border border-border rounded-lg p-4">
+                          <h4 className="font-medium">{poi.title}</h4>
+                          {poi.description && <p className="text-sm text-muted-foreground mt-1">{poi.description}</p>}
+                          <div className="flex items-center mt-2 text-sm">
+                            <MapPin size={14} className="mr-1 text-musafir-spiritual" />
+                            <span>
+                              {poi.coordinates[1].toFixed(6)}, {poi.coordinates[0].toFixed(6)}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </TabsContent>
               </Tabs>
             </div>
             
-            {/* Right Column: Map & Booking */}
             <div className="space-y-6">
               <div className="border border-border rounded-lg p-4">
                 <h3 className="text-xl font-semibold mb-4">Book This Trip</h3>
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between">
                     <span>Base Price</span>
-                    <span>₹{destination.price}</span>
+                    <span>₹{destinationData.price}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Duration</span>
-                    <span>{destination.days} days</span>
+                    <span>{destinationData.days} days</span>
                   </div>
                   <div className="flex justify-between font-bold">
                     <span>Total</span>
-                    <span>₹{destination.price}</span>
+                    <span>₹{destinationData.price}</span>
                   </div>
                 </div>
                 <Button 
@@ -224,23 +299,21 @@ const DestinationDetail = () => {
                 </p>
               </div>
               
-              {/* Map */}
               <div className="border border-border rounded-lg p-4">
                 <h3 className="text-xl font-semibold mb-4">Location & Map</h3>
                 <div className="h-[300px] rounded-lg overflow-hidden mb-4">
-                  <DestinationMap location={destination.coordinates} />
+                  <DestinationMap location={destinationData.coordinates} title={destinationData.title} />
                 </div>
                 <p className="text-sm text-muted-foreground mb-4">
-                  {destination.locationDescription}
+                  {destinationData.locationDescription}
                 </p>
               </div>
               
-              {/* Transportation */}
               <div className="border border-border rounded-lg p-4">
                 <h3 className="text-xl font-semibold mb-4">Transportation Options</h3>
                 <TransportationOptions 
-                  destination={destination.location} 
-                  options={destination.transportation} 
+                  destination={destinationData.location} 
+                  options={destinationData.transportation} 
                 />
               </div>
             </div>
