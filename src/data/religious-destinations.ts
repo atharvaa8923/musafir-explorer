@@ -1,3 +1,4 @@
+
 import { Destination } from './types';
 
 export const religiousDestinations: Destination[] = [
@@ -176,6 +177,7 @@ export const religiousDestinations: Destination[] = [
   },
   {
     id: "chardham-yatra",
+    image: "https://images.unsplash.com/photo-1607247544226-7a63f5bae787", // Added missing image property
     title: "Char Dham Yatra",
     location: "Uttarakhand",
     price: 4900,
