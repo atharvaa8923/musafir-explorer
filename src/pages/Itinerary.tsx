@@ -4,9 +4,11 @@ import Navbar from "@/components/Navbar";
 import ItineraryDetails from "@/components/ItineraryDetails";
 import { Button } from "@/components/ui/button";
 import { Mountain, Compass, Map, Tent } from "lucide-react";
+import useTranslation from "@/hooks/useTranslation";
 
 const Itinerary = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const { t } = useTranslation();
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
@@ -17,7 +19,7 @@ const Itinerary = () => {
       <Navbar />
       <main className="flex-1 py-6">
         <div className="container mx-auto px-4 mb-6">
-          <h1 className="text-3xl font-bold mb-6">Explore Itineraries</h1>
+          <h1 className="text-3xl font-bold mb-6">{t('explore_itineraries')}</h1>
           <div className="flex flex-wrap gap-2 mb-6">
             <Button 
               variant={selectedCategory === "all" ? "default" : "outline"}
@@ -25,7 +27,7 @@ const Itinerary = () => {
               className={selectedCategory === "all" ? "bg-musafir-brown" : ""}
             >
               <Compass className="mr-2 h-4 w-4" />
-              All
+              {t('all')}
             </Button>
             <Button 
               variant={selectedCategory === "trekking" ? "default" : "outline"}
@@ -33,7 +35,7 @@ const Itinerary = () => {
               className={selectedCategory === "trekking" ? "bg-musafir-trekking" : ""}
             >
               <Tent className="mr-2 h-4 w-4" />
-              Trekking
+              {t('trekking')}
             </Button>
             <Button 
               variant={selectedCategory === "meditation" ? "default" : "outline"}
@@ -41,7 +43,7 @@ const Itinerary = () => {
               className={selectedCategory === "meditation" ? "bg-musafir-meditation" : ""}
             >
               <Map className="mr-2 h-4 w-4" />
-              Meditation
+              {t('meditation')}
             </Button>
             <Button 
               variant={selectedCategory === "religious" ? "default" : "outline"}
@@ -49,7 +51,7 @@ const Itinerary = () => {
               className={selectedCategory === "religious" ? "bg-musafir-spiritual" : ""}
             >
               <Map className="mr-2 h-4 w-4" />
-              Pilgrimages
+              {t('pilgrimages')}
             </Button>
             <Button 
               variant={selectedCategory === "hiking" ? "default" : "outline"}
@@ -57,7 +59,7 @@ const Itinerary = () => {
               className={selectedCategory === "hiking" ? "bg-musafir-forest" : ""}
             >
               <Mountain className="mr-2 h-4 w-4" />
-              Hiking
+              {t('hiking')}
             </Button>
           </div>
         </div>
@@ -72,8 +74,8 @@ const Itinerary = () => {
               <p className="text-white/70">Solo adventures under ₹5000</p>
             </div>
             <div className="flex flex-wrap gap-6">
-              <a href="/" className="hover:text-white/70 transition-colors">Home</a>
-              <a href="/itinerary" className="hover:text-white/70 transition-colors">Itineraries</a>
+              <a href="/" className="hover:text-white/70 transition-colors">{t('home')}</a>
+              <a href="/itinerary" className="hover:text-white/70 transition-colors">{t('itineraries')}</a>
               <a href="#" className="hover:text-white/70 transition-colors">Offline Maps</a>
               <a href="#" className="hover:text-white/70 transition-colors">Weather</a>
               <a href="#" className="hover:text-white/70 transition-colors">Packing List</a>

@@ -4,6 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Bus, TrainFront, CalendarIcon, Clock, IndianRupee } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
+import useTranslation from '@/hooks/useTranslation';
 
 interface TransportOption {
   type: 'bus' | 'train';
@@ -21,6 +22,7 @@ interface TransportationOptionsProps {
 
 const TransportationOptions = ({ destination, options }: TransportationOptionsProps) => {
   const [selectedTab, setSelectedTab] = useState<string>(options[0]?.type || 'bus');
+  const { t } = useTranslation();
   
   const busOptions = options.filter(option => option.type === 'bus');
   const trainOptions = options.filter(option => option.type === 'train');
@@ -39,7 +41,7 @@ const TransportationOptions = ({ destination, options }: TransportationOptionsPr
         <TabsList className="grid w-full grid-cols-2 mb-4">
           <TabsTrigger value="bus" disabled={busOptions.length === 0}>
             <Bus className="mr-2 h-4 w-4" />
-            Bus
+            {t('transportation')}
           </TabsTrigger>
           <TabsTrigger value="train" disabled={trainOptions.length === 0}>
             <TrainFront className="mr-2 h-4 w-4" />
@@ -54,7 +56,7 @@ const TransportationOptions = ({ destination, options }: TransportationOptionsPr
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
                     <Bus className="mr-2 h-5 w-5 text-musafir-trekking" />
-                    <span className="font-medium">Bus from {option.from}</span>
+                    <span className="font-medium">{t('bus_from')} {option.from}</span>
                   </div>
                   <span className="flex items-center text-musafir-spiritual font-medium">
                     <IndianRupee className="h-4 w-4 mr-1" />
@@ -77,13 +79,13 @@ const TransportationOptions = ({ destination, options }: TransportationOptionsPr
                   className="w-full bg-musafir-trekking hover:bg-musafir-trekking/90"
                   onClick={() => handleBooking(option)}
                 >
-                  Book Bus Ticket
+                  {t('book_bus')}
                 </Button>
               </div>
             ))
           ) : (
             <div className="text-center py-4 text-muted-foreground">
-              No bus options available for this destination.
+              {t('no_bus_options')}
             </div>
           )}
         </TabsContent>
@@ -95,7 +97,7 @@ const TransportationOptions = ({ destination, options }: TransportationOptionsPr
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center">
                     <TrainFront className="mr-2 h-5 w-5 text-musafir-water" />
-                    <span className="font-medium">Train from {option.from}</span>
+                    <span className="font-medium">{t('train_from')} {option.from}</span>
                   </div>
                   <span className="flex items-center text-musafir-spiritual font-medium">
                     <IndianRupee className="h-4 w-4 mr-1" />
@@ -118,13 +120,13 @@ const TransportationOptions = ({ destination, options }: TransportationOptionsPr
                   className="w-full bg-musafir-water hover:bg-musafir-water/90"
                   onClick={() => handleBooking(option)}
                 >
-                  Book Train Ticket
+                  {t('book_train')}
                 </Button>
               </div>
             ))
           ) : (
             <div className="text-center py-4 text-muted-foreground">
-              No train options available for this destination.
+              {t('no_train_options')}
             </div>
           )}
         </TabsContent>

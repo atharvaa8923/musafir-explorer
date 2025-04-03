@@ -3,14 +3,19 @@
 export const API_KEYS = {
   DESTINATION_API: import.meta.env.VITE_DESTINATION_API_KEY || 'demo-api-key-for-development',
   WEATHER_API: import.meta.env.VITE_WEATHER_API_KEY || 'demo-weather-api-key',
-  MAPS_API: import.meta.env.VITE_MAPS_API_KEY || 'demo-maps-api-key'
+  MAPS_API: import.meta.env.VITE_MAPS_API_KEY || 'demo-maps-api-key',
+  TRANSPORTATION_API: import.meta.env.VITE_TRANSPORTATION_API_KEY || 'demo-transportation-api-key'
 };
 
 // API Endpoints
 export const API_ENDPOINTS = {
   DESTINATIONS: 'https://api.musafir-travel.example.com/v1/destinations',
   WEATHER: 'https://api.openweathermap.org/data/2.5',
-  MAPS: 'https://api.mapbox.com/geocoding/v5/mapbox.places'
+  MAPS: 'https://api.mapbox.com/geocoding/v5/mapbox.places',
+  TRANSPORTATION: {
+    BUS: 'https://api.musafir-travel.example.com/v1/transportation/bus',
+    TRAIN: 'https://api.musafir-travel.example.com/v1/transportation/train'
+  }
 };
 
 // API Configuration Settings

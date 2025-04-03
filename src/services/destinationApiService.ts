@@ -1,6 +1,7 @@
 
 import { Destination, Destinations, SearchFilters } from './types';
 import { API_ENDPOINTS, API_KEYS } from '@/config/apiConfig';
+import transportationApiService from './transportationApiService';
 
 // API configuration
 const API_ENDPOINT = API_ENDPOINTS.DESTINATIONS;
@@ -23,7 +24,10 @@ export class DestinationApiService {
       }
       
       const data = await response.json();
-      return data.destinations;
+      
+      // Enhance destinations with transportation data
+      const enhancedDestinations = await this.enhanceDestinationsWithTransportation(data.destinations);
+      return enhancedDestinations;
     } catch (error) {
       console.error('Error fetching destinations from API:', error);
       // Fallback to local data in case API fails
@@ -48,6 +52,13 @@ export class DestinationApiService {
       }
       
       const data = await response.json();
+      
+      // Enhance destination with transportation data
+      if (data.destination) {
+        const enhancedDestination = await this.enhanceDestinationWithTransportation(data.destination);
+        return enhancedDestination;
+      }
+      
       return data.destination;
     } catch (error) {
       console.error(`Error fetching destination ${id} from API:`, error);
@@ -92,7 +103,10 @@ export class DestinationApiService {
       }
       
       const data = await response.json();
-      return data.destinations;
+      
+      // Enhance destinations with transportation data
+      const enhancedDestinations = await this.enhanceDestinationsWithTransportation(data.destinations);
+      return enhancedDestinations;
     } catch (error) {
       console.error('Error searching destinations from API:', error);
       // Fallback to local filtering in case API fails
@@ -101,6 +115,75 @@ export class DestinationApiService {
       const searchService = new SearchService();
       return searchService.searchDestinations(destinations, filters);
     }
+  }
+  
+  // Helper method to enhance a destination with transportation data
+  private async enhanceDestinationWithTransportation(destination: Destination): Promise<Destination> {
+    try {
+      // Only attempt to enhance if destination has a location
+      if (!destination.location) return destination;
+      
+      // Get bus and train options from transportation API
+      const busOptions = await transportationApiService.fetchBusOptions(destination.location);
+      const trainOptions = await transportationApiService.fetchTrainOptions(destination.location);
+      
+      // Format to match existing transportation structure
+      const formattedBusOptions = busOptions.map(opt => ({
+        type: 'bus' as const,
+        from: opt.from,
+        price: opt.price,
+        duration: opt.duration,
+        schedule: opt.schedule,
+        link: `https://booking.musafir-travel.example.com/bus/${opt.id}`
+      }));
+      
+      const formattedTrainOptions = trainOptions.map(opt => ({
+        type: 'train' as const,
+        from: opt.from,
+        price: opt.price,
+        duration: opt.duration,
+        schedule: opt.schedule,
+        link: `https://booking.musafir-travel.example.com/train/${opt.id}`
+      }));
+      
+      // Combine with existing transportation options or create new array
+      let transportationOptions = destination.transportation || [];
+      transportationOptions = [
+        ...transportationOptions,
+        ...formattedBusOptions,
+        ...formattedTrainOptions
+      ];
+      
+      // Remove duplicates (based on from+type)
+      const uniqueTransportation = Array.from(
+        new Map(transportationOptions.map(item => 
+          [`${item.from}-${item.type}`, item]
+        )).values()
+      );
+      
+      // Return enhanced destination with updated transportation
+      return {
+        ...destination,
+        transportation: uniqueTransportation
+      };
+    } catch (error) {
+      console.error('Error enhancing destination with transportation:', error);
+      // Return original destination if enhancement fails
+      return destination;
+    }
+  }
+  
+  // Helper method to enhance multiple destinations with transportation data
+  private async enhanceDestinationsWithTransportation(destinations: Destinations): Promise<Destinations> {
+    // For better performance, we'll enhance only the first 3 destinations with transportation data
+    const enhancedDestinations = [...destinations];
+    
+    // Only enhance top 3 destinations to avoid too many API calls
+    for (let i = 0; i < Math.min(3, enhancedDestinations.length); i++) {
+      enhancedDestinations[i] = await this.enhanceDestinationWithTransportation(enhancedDestinations[i]);
+    }
+    
+    return enhancedDestinations;
   }
 }
 
