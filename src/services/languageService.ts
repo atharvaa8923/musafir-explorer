@@ -28,7 +28,6 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     pilgrimages: "Pilgrimages",
     hiking: "Hiking",
     select_destination: "Select destination",
-    duration: "Duration",
     day_by_day: "Day by Day",
     transportation: "Transportation",
     accommodation: "Accommodation",
@@ -44,13 +43,11 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     no_itineraries_desc: "We couldn't find any itineraries matching the selected category.",
     select_option: "Select option",
     days: "Days",
-    budget: "Budget",
     route: "Route",
     time: "Time",
     options: "Options",
     cost: "Cost",
-    type: "Type",
-    location: "Location"
+    type: "Type"
   },
   hi: {
     home: "होम",
@@ -77,7 +74,6 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     pilgrimages: "तीर्थ यात्रा",
     hiking: "हाइकिंग",
     select_destination: "गंतव्य चुनें",
-    duration: "अवधि",
     day_by_day: "दिन-प्रतिदिन",
     transportation: "परिवहन",
     accommodation: "आवास",
@@ -93,13 +89,11 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     no_itineraries_desc: "हमें चयनित श्रेणी से मेल खाते कोई यात्रा कार्यक्रम नहीं मिले।",
     select_option: "विकल्प चुनें",
     days: "दिन",
-    budget: "बजट",
     route: "मार्ग",
     time: "समय",
     options: "विकल्प",
     cost: "कीमत",
-    type: "प्रकार",
-    location: "स्थान"
+    type: "प्रकार"
   },
   ta: {
     home: "முகப்பு",
@@ -126,7 +120,6 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     pilgrimages: "புனித யாத்திரைகள்",
     hiking: "நடைப்பயணம்",
     select_destination: "இடத்தைத் தேர்ந்தெடுக்கவும்",
-    duration: "காலம்",
     day_by_day: "நாள் வாரியாக",
     transportation: "போக்குவரத்து",
     accommodation: "தங்குமிடம்",
@@ -142,13 +135,11 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     no_itineraries_desc: "தேர்ந்தெடுக்கப்பட்ட வகைக்கு பொருந்தும் பயணத் திட்டங்கள் எதுவும் கிடைக்கவில்லை.",
     select_option: "விருப்பத்தை தேர்வு செய்யவும்",
     days: "நாட்கள்",
-    budget: "பட்ஜெட்",
     route: "வழி",
     time: "நேரம்",
     options: "விருப்பங்கள்",
     cost: "விலை",
-    type: "வகை",
-    location: "இடம்"
+    type: "வகை"
   },
   te: {
     home: "హోమ్",
@@ -175,7 +166,6 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     pilgrimages: "పుణ్యక్షేత్ర యాత్రలు",
     hiking: "హైకింగ్",
     select_destination: "గమ్యస్థానాన్ని ఎంచుకోండి",
-    duration: "వ్యవధి",
     day_by_day: "రోజువారీగా",
     transportation: "రవాణా",
     accommodation: "వసతి",
@@ -191,13 +181,11 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     no_itineraries_desc: "ఎంచుకున్న వర్గానికి సరిపోలే ప్రయాణ పథకాలు మాకు కనిపించలేదు.",
     select_option: "ఎంపికను ఎంచుకోండి",
     days: "రోజులు",
-    budget: "బడ్జెట్",
     route: "మార్గం",
     time: "సమయం",
     options: "ఎంపికలు",
     cost: "ధర",
-    type: "రకం",
-    location: "ప్రదేశం"
+    type: "రకం"
   },
   bn: {
     home: "হোম",
@@ -224,7 +212,6 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     pilgrimages: "তীর্থযাত্রা",
     hiking: "হাইকিং",
     select_destination: "গন্তব্য নির্বাচন করুন",
-    duration: "সময়কাল",
     day_by_day: "দিন অনুযায়ী",
     transportation: "পরিবহন",
     accommodation: "আবাসন",
@@ -240,13 +227,11 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     no_itineraries_desc: "আমরা নির্বাচিত বিভাগের সাথে মিলে যাওয়া কোন ভ্রমণসূচী খুঁজে পাইনি।",
     select_option: "বিকল্প নির্বাচন করুন",
     days: "দিন",
-    budget: "বাজেট",
     route: "রুট",
     time: "সময়",
     options: "বিকল্পগুলি",
     cost: "খরচ",
-    type: "ধরন",
-    location: "অবস্থান"
+    type: "ধরন"
   },
   mr: {
     home: "होम",
@@ -273,7 +258,6 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     pilgrimages: "तीर्थक्षेत्र",
     hiking: "हायकिंग",
     select_destination: "गंतव्य स्थान निवडा",
-    duration: "कालावधी",
     day_by_day: "दिवसेंदिवस",
     transportation: "वाहतूक",
     accommodation: "निवास",
@@ -289,13 +273,11 @@ const translations: Record<SupportedLanguage, Record<string, string>> = {
     no_itineraries_desc: "आम्हाला निवडलेल्या श्रेणीशी जुळणाऱ्या कोणत्याही प्रवास योजना सापडल्या नाहीत.",
     select_option: "पर्याय निवडा",
     days: "दिवस",
-    budget: "बजेट",
     route: "मार्ग",
     time: "वेळ",
     options: "पर्याय",
     cost: "किंमत",
-    type: "प्रकार",
-    location: "स्थान"
+    type: "प्रकार"
   }
 };
 
@@ -366,3 +348,4 @@ class LanguageServiceImpl implements LanguageService {
 // Create and export a singleton instance
 const languageService: LanguageService = new LanguageServiceImpl();
 export default languageService;
+
