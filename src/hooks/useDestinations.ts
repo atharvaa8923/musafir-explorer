@@ -11,8 +11,8 @@ export const useDestinations = (initialFilters?: FiltersState) => {
   const [filters, setFilters] = useState(initialFilters || {
     searchQuery: '',
     location: '',
-    budget: [0, 5000],
-    days: [1, 14],
+    budget: [0, 5000] as [number, number],
+    days: [1, 14] as [number, number],
     categories: [],
   });
 

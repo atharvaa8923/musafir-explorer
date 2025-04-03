@@ -1,7 +1,7 @@
 
 import { destinations } from "@/data";
 import { toast } from "@/components/ui/use-toast";
-import { DatabaseService, Destination, Destinations, SearchFilters } from './types';
+import { DatabaseService, Destination, Destinations, SearchFilters, BlogPost } from './types';
 import { getFromStorage, saveToStorage } from './storageUtils';
 import { SubscriberService } from './subscriberService';
 import { AuthService } from './authService';
@@ -9,6 +9,7 @@ import { SearchService } from './searchService';
 
 export class LocalStorageDatabase implements DatabaseService {
   private storageKey = "musafir-destinations";
+  private blogStorageKey = "musafir-blogs";
   private subscribers = new SubscriberService<Destination | Destinations>();
   private authService = new AuthService();
   private searchService = new SearchService();
@@ -19,6 +20,36 @@ export class LocalStorageDatabase implements DatabaseService {
     // Initialize local storage with sample data if it doesn't exist
     if (!localStorage.getItem(this.storageKey)) {
       saveToStorage(this.storageKey, initialData);
+    }
+    
+    // Initialize blog storage if it doesn't exist
+    if (!localStorage.getItem(this.blogStorageKey)) {
+      // Sample blog data
+      const sampleBlogs: BlogPost[] = [
+        {
+          id: "blog-1",
+          title: "Top 10 Budget Tips for Solo Travelers in India",
+          summary: "Essential budget-saving tips for solo travelers exploring India on a tight budget.",
+          content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nec fermentum quam...",
+          author: "Raj Sharma",
+          date: "2023-08-15",
+          image: "/placeholder.svg",
+          category: "tips",
+          tags: ["budget", "solo travel", "india"]
+        },
+        {
+          id: "blog-2",
+          title: "A Complete Guide to Backpacking in the Himalayas",
+          summary: "Everything you need to know before embarking on a Himalayan adventure.",
+          content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nec fermentum quam...",
+          author: "Meera Patel",
+          date: "2023-07-22",
+          image: "/placeholder.svg",
+          category: "guides",
+          tags: ["himalayas", "trekking", "backpacking"]
+        }
+      ];
+      saveToStorage(this.blogStorageKey, sampleBlogs);
     }
     
     // Add event listener for storage changes from other tabs
@@ -183,5 +214,19 @@ export class LocalStorageDatabase implements DatabaseService {
   // Subscribe to a specific destination changes
   subscribeToDestination(id: string, callback: (destination: Destination | undefined) => void): () => void {
     return this.subscribers.subscribe(id, callback);
+  }
+
+  // New blog-related methods
+  async getBlogs(): Promise<BlogPost[]> {
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 300));
+    return getFromStorage<BlogPost[]>(this.blogStorageKey, []);
+  }
+
+  async getBlogById(id: string): Promise<BlogPost | undefined> {
+    // Simulate network delay
+    await new Promise(resolve => setTimeout(resolve, 200));
+    const blogs = getFromStorage<BlogPost[]>(this.blogStorageKey, []);
+    return blogs.find(blog => blog.id === id);
   }
 }
