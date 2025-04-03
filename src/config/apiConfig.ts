@@ -1,9 +1,9 @@
 
 // API Configuration
 export const API_KEYS = {
-  DESTINATION_API: process.env.REACT_APP_DESTINATION_API_KEY || 'demo-api-key-for-development',
-  WEATHER_API: process.env.REACT_APP_WEATHER_API_KEY || 'demo-weather-api-key',
-  MAPS_API: process.env.REACT_APP_MAPS_API_KEY || 'demo-maps-api-key'
+  DESTINATION_API: import.meta.env.VITE_DESTINATION_API_KEY || 'demo-api-key-for-development',
+  WEATHER_API: import.meta.env.VITE_WEATHER_API_KEY || 'demo-weather-api-key',
+  MAPS_API: import.meta.env.VITE_MAPS_API_KEY || 'demo-maps-api-key'
 };
 
 // API Endpoints

@@ -1,15 +1,16 @@
 
 import { Destination, Destinations, SearchFilters } from './types';
+import { API_ENDPOINTS, API_KEYS } from '@/config/apiConfig';
 
 // API configuration
-const API_ENDPOINT = 'https://api.musafir-travel.example.com/v1';
-const API_KEY = process.env.REACT_APP_DESTINATION_API_KEY || 'demo-api-key-for-development';
+const API_ENDPOINT = API_ENDPOINTS.DESTINATIONS;
+const API_KEY = API_KEYS.DESTINATION_API;
 
 export class DestinationApiService {
   // Fetch all destinations
   async fetchDestinations(): Promise<Destinations> {
     try {
-      const response = await fetch(`${API_ENDPOINT}/destinations`, {
+      const response = await fetch(`${API_ENDPOINT}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -34,7 +35,7 @@ export class DestinationApiService {
   // Fetch a specific destination by ID
   async fetchDestinationById(id: string): Promise<Destination | undefined> {
     try {
-      const response = await fetch(`${API_ENDPOINT}/destinations/${id}`, {
+      const response = await fetch(`${API_ENDPOINT}/${id}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -78,7 +79,7 @@ export class DestinationApiService {
         );
       }
       
-      const response = await fetch(`${API_ENDPOINT}/destinations/search?${queryParams.toString()}`, {
+      const response = await fetch(`${API_ENDPOINT}/search?${queryParams.toString()}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
