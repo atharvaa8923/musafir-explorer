@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Search, IndianRupee, Filter } from 'lucide-react';
@@ -39,9 +38,10 @@ const locationSuggestions = [
 
 interface SearchAndFilterProps {
   onFilterChange: (filters: FiltersState) => void;
+  initialFilters?: FiltersState;
 }
 
-const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
+const SearchAndFilter = ({ onFilterChange, initialFilters }: SearchAndFilterProps) => {
   const { t } = useTranslation();
   
   const {
@@ -54,24 +54,21 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
     handleCategoryChange,
     handleCategoryClear,
     handleClearAll
-  } = useFilters(undefined, onFilterChange);
+  } = useFilters(initialFilters, onFilterChange);
   
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showAdvanced, setShowAdvanced] = useState(false);
   
-  // Advanced filters
   const [difficulty, setDifficulty] = useState('');
   const [season, setSeason] = useState('');
   const [amenities, setAmenities] = useState<string[]>([]);
   const [transportation, setTransportation] = useState<string[]>([]);
 
-  // Function to fetch filtered destinations
   const fetchFilteredDestinations = async () => {
     try {
       setIsLoading(true);
       
-      // Combine basic and advanced filters
       const allFilters = {
         ...filters,
         difficulty: difficulty || undefined,
@@ -83,7 +80,6 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
       const results = await databaseService.searchDestinations(allFilters);
       console.log('Filtered destinations:', results);
       
-      // Show toast notification with results count
       toast({
         title: "Search Results",
         description: `Found ${results.length} destinations matching your criteria.`,
@@ -100,7 +96,6 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
     }
   };
 
-  // Update filters when advanced filters change
   useEffect(() => {
     const handler = setTimeout(() => {
       if (difficulty || season || amenities.length > 0 || transportation.length > 0 ||
@@ -144,7 +139,6 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Location Filter */}
         <LocationSelector 
           location={filters.location}
           open={open}
@@ -154,7 +148,6 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
           locationSuggestions={locationSuggestions}
         />
         
-        {/* Budget Range Slider */}
         <RangeSlider
           label={t('budget')}
           value={filters.budget}
@@ -165,7 +158,6 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
           onChange={handleBudgetChange}
         />
         
-        {/* Duration Range Slider */}
         <RangeSlider
           label={t('duration')}
           value={filters.days}
@@ -177,7 +169,6 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
         />
       </div>
       
-      {/* Categories */}
       <CategorySelector
         categories={categories}
         selectedCategories={filters.categories}
@@ -185,7 +176,6 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
         onCategoryClear={handleCategoryClear}
       />
       
-      {/* Advanced Filters Collapsible */}
       <Collapsible open={showAdvanced} onOpenChange={setShowAdvanced} className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-medium">Advanced Filters</h3>
@@ -224,7 +214,6 @@ const SearchAndFilter = ({ onFilterChange }: SearchAndFilterProps) => {
         </CollapsibleContent>
       </Collapsible>
       
-      {/* Selected filters summary */}
       <ActiveFilters 
         filters={filters}
         clearLocation={clearLocation}

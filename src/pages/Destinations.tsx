@@ -1,7 +1,7 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import DestinationCard from "@/components/DestinationCard";
 import { SearchAndFilter } from "@/components/search";
 import { useDestinations } from "@/hooks/useDestinations";
@@ -10,13 +10,34 @@ import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 
 const Destinations = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const initialSearchQuery = searchParams.get('search') || '';
+  
   const {
     destinations: filteredDestinations,
     loading,
     filters,
     handleFilterChange,
     refreshDestinations
-  } = useDestinations();
+  } = useDestinations({
+    searchQuery: initialSearchQuery,
+    location: '',
+    budget: [0, 5000],
+    days: [1, 14],
+    categories: [],
+  });
+
+  // Apply search from URL when component mounts
+  useEffect(() => {
+    const searchQuery = searchParams.get('search');
+    if (searchQuery) {
+      handleFilterChange({
+        ...filters,
+        searchQuery
+      });
+    }
+  }, [location.search]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -31,7 +52,13 @@ const Destinations = () => {
           </div>
           
           <div className="mb-8 p-4 border border-border rounded-lg bg-card">
-            <SearchAndFilter onFilterChange={handleFilterChange} />
+            <SearchAndFilter 
+              onFilterChange={handleFilterChange}
+              initialFilters={{
+                ...filters,
+                searchQuery: initialSearchQuery
+              }}
+            />
           </div>
           
           <div className="mb-6 flex justify-between items-center">

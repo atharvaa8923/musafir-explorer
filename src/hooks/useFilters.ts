@@ -1,5 +1,4 @@
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export interface FiltersState {
   searchQuery: string;
@@ -43,7 +42,25 @@ export const useFilters = (
   },
   onFilterChange?: (filters: FiltersState) => void
 ): UseFiltersReturn => {
-  const [filters, setFilters] = useState<FiltersState>(initialFilters);
+  const [filters, setFilters] = useState<FiltersState>({
+    ...initialFilters
+  });
+  
+  useEffect(() => {
+    if (initialFilters) {
+      setFilters(prev => ({
+        ...prev,
+        ...initialFilters
+      }));
+      
+      if (onFilterChange) {
+        onFilterChange(initialFilters);
+      }
+    }
+  }, [
+    initialFilters.searchQuery, 
+    initialFilters.location,
+  ]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newFilters = { ...filters, searchQuery: e.target.value };
@@ -64,7 +81,6 @@ export const useFilters = (
   };
 
   const handleBudgetChange = (value: number[]) => {
-    // Ensure we have exactly two values for the budget tuple
     const budgetTuple: [number, number] = [
       value[0] ?? filters.budget[0],
       value[1] ?? filters.budget[1]
@@ -76,7 +92,6 @@ export const useFilters = (
   };
 
   const handleDaysChange = (value: number[]) => {
-    // Ensure we have exactly two values for the days tuple
     const daysTuple: [number, number] = [
       value[0] ?? filters.days[0],
       value[1] ?? filters.days[1]

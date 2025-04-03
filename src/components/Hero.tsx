@@ -1,8 +1,36 @@
 
+import { useState } from "react";
 import { ArrowRight, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+import { toast } from "@/components/ui/use-toast";
 
 const Hero = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+  
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+  
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/destinations?search=${encodeURIComponent(searchQuery.trim())}`);
+    } else {
+      toast({
+        title: "Please enter a search term",
+        description: "Enter a destination or activity you'd like to explore",
+        variant: "destructive",
+      });
+    }
+  };
+  
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSearch();
+    }
+  };
+
   return (
     <div className="relative overflow-hidden bg-gradient-to-b from-musafir-light to-background pt-16 pb-24">
       <div className="container mx-auto px-4">
@@ -20,9 +48,16 @@ const Hero = () => {
                 type="text"
                 placeholder="Where do you want to go?"
                 className="pl-10 pr-4 py-3 rounded-full w-full sm:w-80 border border-border focus:ring-2 focus:ring-musafir-earth focus:border-transparent outline-none"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onKeyPress={handleKeyPress}
               />
             </div>
-            <Button size="lg" className="rounded-full bg-musafir-spiritual hover:bg-musafir-spiritual/90">
+            <Button 
+              size="lg" 
+              className="rounded-full bg-musafir-spiritual hover:bg-musafir-spiritual/90"
+              onClick={handleSearch}
+            >
               <span>Find Adventures</span>
               <ArrowRight className="ml-2" size={18} />
             </Button>
