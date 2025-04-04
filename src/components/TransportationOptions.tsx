@@ -11,7 +11,7 @@ import {
   Plane, 
   Ship, 
   Car, 
-  Jeep 
+  Truck 
 } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import useTranslation from '@/hooks/useTranslation';
@@ -61,7 +61,7 @@ const TransportationOptions = ({ destination, options }: TransportationOptionsPr
     if (lowerType.includes('train')) return <TrainFront className={className} />;
     if (lowerType.includes('flight')) return <Plane className={className} />;
     if (lowerType.includes('ferry')) return <Ship className={className} />;
-    if (lowerType.includes('jeep')) return <Jeep className={className} />;
+    if (lowerType.includes('jeep')) return <Truck className={className} />; // Changed from Jeep to Truck
     if (lowerType.includes('taxi') || lowerType.includes('sumo')) return <Car className={className} />;
     
     return <Bus className={className} />;
