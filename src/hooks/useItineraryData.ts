@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import databaseService from '@/services/databaseService';
 import transportationApiService from '@/services/transportationApiService';
@@ -102,15 +103,29 @@ export function useItineraryData(selectedCategory: string) {
         }));
         
         // Process existing transportation options to match the expected format
-        const processedExistingOptions = transportationOptions.map((transport: any) => ({
-          type: transport.type === "bus" ? "Bus" : transport.type === "train" ? "Train" : "Jeep",
-          from: transport.from,
-          to: selectedDest.location,
-          cost: transport.price || 0,
-          duration: transport.duration || "N/A",
-          time: transport.schedule || "N/A",
-          options: ["Standard", "Premium"]
-        }));
+        const processedExistingOptions = transportationOptions.map((transport: any) => {
+          let displayType = "Other";
+          
+          // Map transportation types to display types
+          if (transport.type === "bus") displayType = "Bus";
+          else if (transport.type === "train") displayType = "Train";
+          else if (transport.type === "jeep") displayType = "Jeep";
+          else if (transport.type === "flight") displayType = "Flight";
+          else if (transport.type === "shared taxi") displayType = "Shared Taxi";
+          else if (transport.type === "shared sumo") displayType = "Shared Sumo";
+          else if (transport.type === "ferry") displayType = "Ferry";
+          else if (transport.type === "local bus") displayType = "Local Bus";
+          
+          return {
+            type: displayType,
+            from: transport.from,
+            to: selectedDest.location,
+            cost: transport.price || 0,
+            duration: transport.duration || "N/A",
+            time: transport.schedule || "N/A",
+            options: ["Standard", "Premium"]
+          };
+        });
         
         // Combine existing and new transportation options
         const combinedTransportation = [
