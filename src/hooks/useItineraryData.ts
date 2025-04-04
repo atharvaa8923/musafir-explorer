@@ -82,74 +82,89 @@ export function useItineraryData(selectedCategory: string) {
         
         // Format API transportation options to match existing structure
         const formattedBusOptions = busOptions.map(opt => ({
-          type: 'bus' as const,
+          type: 'Bus',
           from: opt.from,
-          price: opt.price,
+          to: selectedDest.location,
+          cost: opt.price,
           duration: opt.duration,
-          schedule: opt.schedule,
-          link: `https://booking.musafir-travel.example.com/bus/${opt.id}`
+          time: opt.schedule,
+          options: ["Standard", "Premium"]
         }));
         
         const formattedTrainOptions = trainOptions.map(opt => ({
-          type: 'train' as const,
+          type: 'Train',
           from: opt.from,
-          price: opt.price,
+          to: selectedDest.location,
+          cost: opt.price,
           duration: opt.duration,
-          schedule: opt.schedule,
-          link: `https://booking.musafir-travel.example.com/train/${opt.id}`
+          time: opt.schedule,
+          options: ["Standard", "Premium"]
+        }));
+        
+        // Process existing transportation options to match the expected format
+        const processedExistingOptions = transportationOptions.map((transport: any) => ({
+          type: transport.type === "bus" ? "Bus" : transport.type === "train" ? "Train" : "Jeep",
+          from: transport.from,
+          to: selectedDest.location,
+          cost: transport.price || 0,
+          duration: transport.duration || "N/A",
+          time: transport.schedule || "N/A",
+          options: ["Standard", "Premium"]
         }));
         
         // Combine existing and new transportation options
-        transportationOptions = [
-          ...transportationOptions,
+        const combinedTransportation = [
+          ...processedExistingOptions,
           ...formattedBusOptions,
           ...formattedTrainOptions
         ];
         
-        // Remove duplicates (based on from+type)
-        const uniqueTransportation = Array.from(
-          new Map(transportationOptions.map(item => 
-            [`${item.from}-${item.type}`, item]
-          )).values()
-        );
+        // Generate day-wise itinerary from the itinerary data if available
+        const dayWiseItems = selectedDest.itinerary?.map((day: any, index: number) => ({
+          day: index + 1,
+          title: day.title || `Day ${index + 1}`,
+          description: day.description || "Details not available",
+          budget: Math.round(selectedDest.price / selectedDest.days)
+        })) || [];
         
-        transportationOptions = uniqueTransportation;
-      } catch (error) {
-        console.error("Error fetching additional transportation options:", error);
-        // Continue with existing transportation options
-      }
-      
-      const itineraryData = {
-        title: selectedDest.title,
-        location: selectedDest.location,
-        totalCost: selectedDest.price,
-        days: selectedDest.days,
-        description: selectedDest.longDescription || selectedDest.description,
-        transportation: transportationOptions.map((transport: any) => ({
-          type: transport.type === "bus" ? "Bus" : "Train",
-          from: transport.from,
-          to: selectedDest.location,
-          cost: transport.price,
-          duration: transport.duration,
-          time: transport.schedule,
-          options: ["Standard", "Premium"]
-        })),
-        accommodation: selectedDest.accommodation?.map((accom: any) => ({
+        // Generate accommodation options from the accommodation data if available
+        const accommodationItems = selectedDest.accommodation?.map((accom: any) => ({
           type: accom.name,
-          location: accom.location,
+          location: accom.location || selectedDest.location,
           cost: Math.round(selectedDest.price / selectedDest.days / 2),
           perNight: true,
           options: accom.amenities?.map((a: string) => a) || ["Standard Room", "Deluxe Room"]
-        })) || [],
-        dayWiseItinerary: selectedDest.itinerary?.map((day: any, index: number) => ({
-          day: index + 1,
-          title: day.title,
-          description: day.description,
-          budget: Math.round(selectedDest.price / selectedDest.days)
-        })) || []
-      };
-      
-      setSelectedDestinationData(itineraryData);
+        })) || [];
+        
+        const itineraryData = {
+          title: selectedDest.title,
+          location: selectedDest.location,
+          totalCost: selectedDest.price,
+          days: selectedDest.days,
+          description: selectedDest.longDescription || selectedDest.description,
+          transportation: combinedTransportation,
+          accommodation: accommodationItems,
+          dayWiseItinerary: dayWiseItems
+        };
+        
+        setSelectedDestinationData(itineraryData);
+      } catch (error) {
+        console.error("Error processing destination data:", error);
+        
+        // Fallback to basic data if processing fails
+        const basicItineraryData = {
+          title: selectedDest.title,
+          location: selectedDest.location,
+          totalCost: selectedDest.price,
+          days: selectedDest.days,
+          description: selectedDest.longDescription || selectedDest.description,
+          transportation: [],
+          accommodation: [],
+          dayWiseItinerary: []
+        };
+        
+        setSelectedDestinationData(basicItineraryData);
+      }
     };
     
     processDestinationData();
