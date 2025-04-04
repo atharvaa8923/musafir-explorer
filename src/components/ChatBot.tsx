@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageCircle, Send, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -46,8 +47,6 @@ const ChatBot = () => {
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
-    if (!isOpen) {
-    }
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -10,6 +10,7 @@ import {
   ChatbotPreview,
   Footer
 } from "@/components/home";
+import { Toaster } from "@/components/ui/toaster";
 
 const Index = () => {
   return (
@@ -26,6 +27,7 @@ const Index = () => {
       <ChatBot />
       
       <Footer />
+      <Toaster />
     </div>
   );
 };

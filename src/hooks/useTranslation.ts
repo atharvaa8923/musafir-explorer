@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 import languageService from '@/services/languageService';
 import { SupportedLanguage } from '@/services/types';
-import { getChatResponse } from '@/services/chatService';
 
 export const useTranslation = () => {
   const [language, setLanguage] = useState<SupportedLanguage>(
