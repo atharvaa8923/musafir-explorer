@@ -26,7 +26,6 @@ export const useTranslation = () => {
     language,
     setLanguage: languageService.setLanguage,
     availableLanguages: languageService.getAvailableLanguages(),
-    getChatResponse,
   };
 };
 
