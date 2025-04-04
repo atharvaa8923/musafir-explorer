@@ -61,7 +61,7 @@ const TransportationOptions = ({ destination, options }: TransportationOptionsPr
     if (lowerType.includes('train')) return <TrainFront className={className} />;
     if (lowerType.includes('flight')) return <Plane className={className} />;
     if (lowerType.includes('ferry')) return <Ship className={className} />;
-    if (lowerType.includes('jeep')) return <Truck className={className} />; // Changed from Jeep to Truck
+    if (lowerType.includes('jeep')) return <Truck className={className} />; // Using Truck icon for Jeep
     if (lowerType.includes('taxi') || lowerType.includes('sumo')) return <Car className={className} />;
     
     return <Bus className={className} />;
