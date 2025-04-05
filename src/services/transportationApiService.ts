@@ -8,7 +8,7 @@ const API_KEY = API_KEYS.TRANSPORTATION_API;
 
 export interface TransportationOption {
   id: string;
-  type: 'bus' | 'train' | 'jeep' | 'flight' | 'shared taxi' | 'shared sumo' | 'ferry' | 'local bus';
+  type: 'bus' | 'train' | 'jeep' | 'flight' | 'shared taxi' | 'shared sumo' | 'ferry' | 'local bus' | 'helicopter';
   from: string;
   to: string;
   price: number;
