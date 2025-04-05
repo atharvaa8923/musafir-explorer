@@ -167,7 +167,7 @@ export class DestinationApiService {
         transportation: uniqueTransportation
       };
     } catch (error) {
-      console.error('Error enhancing destination with transportation:', error);
+      console.error('Error enhancing destination with transportation data:', error);
       // Return original destination if enhancement fails
       return destination;
     }
