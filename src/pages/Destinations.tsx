@@ -7,15 +7,40 @@ import { SearchAndFilter } from "@/components/search";
 import { useDestinations } from "@/hooks/useDestinations";
 import { FiltersState } from "@/hooks/useFilters";
 import { Button } from "@/components/ui/button";
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, MapPin, MapIcon, Heart, List, ArrowUpDown } from "lucide-react";
+import DestinationMap from "@/components/DestinationMap";
+import TravelInsights from "@/components/TravelInsights";
+import RelatedDestinations from "@/components/RelatedDestinations";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/components/ui/use-toast";
+
+// Type for sortable fields
+type SortField = 'price' | 'days' | 'popularity';
+
+// Type for sort order
+type SortOrder = 'asc' | 'desc';
 
 const Destinations = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const initialSearchQuery = searchParams.get('search') || '';
+  const { toast } = useToast();
   
+  // State for view type (list or map)
+  const [viewType, setViewType] = useState<'list' | 'map'>('list');
+  
+  // State for favorites
+  const [favorites, setFavorites] = useState<string[]>(() => {
+    const saved = localStorage.getItem('favorites');
+    return saved ? JSON.parse(saved) : [];
+  });
+  
+  // State for sorting
+  const [sortField, setSortField] = useState<SortField>('price');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+
   const {
-    destinations: filteredDestinations,
+    destinations: unsortedDestinations,
     loading,
     filters,
     handleFilterChange,
@@ -28,6 +53,21 @@ const Destinations = () => {
     categories: [],
   });
 
+  // Sort destinations based on sort field and order
+  const filteredDestinations = [...unsortedDestinations].sort((a, b) => {
+    if (sortField === 'price') {
+      return sortOrder === 'asc' ? a.price - b.price : b.price - a.price;
+    } else if (sortField === 'days') {
+      return sortOrder === 'asc' ? a.days - b.days : b.days - a.days;
+    } else if (sortField === 'popularity') {
+      // Fallback sorting by id for now
+      return sortOrder === 'asc' 
+        ? (a.popularity || 0) - (b.popularity || 0) 
+        : (b.popularity || 0) - (a.popularity || 0);
+    }
+    return 0;
+  });
+
   // Apply search from URL when component mounts
   useEffect(() => {
     const searchQuery = searchParams.get('search');
@@ -38,6 +78,37 @@ const Destinations = () => {
       });
     }
   }, [location.search]);
+
+  // Save favorites to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+  }, [favorites]);
+
+  // Handle toggling a destination as favorite
+  const toggleFavorite = (id: string) => {
+    setFavorites(prev => {
+      if (prev.includes(id)) {
+        toast({
+          title: "Removed from favorites",
+          description: "This destination has been removed from your favorites.",
+        });
+        return prev.filter(favId => favId !== id);
+      } else {
+        toast({
+          title: "Added to favorites",
+          description: "This destination has been added to your favorites.",
+        });
+        return [...prev, id];
+      }
+    });
+  };
+
+  // Handle sorting change
+  const handleSortChange = (value: string) => {
+    const [field, order] = value.split('-') as [SortField, SortOrder];
+    setSortField(field);
+    setSortOrder(order);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -61,7 +132,7 @@ const Destinations = () => {
             />
           </div>
           
-          <div className="mb-6 flex justify-between items-center">
+          <div className="mb-6 flex flex-wrap justify-between items-center gap-4">
             <div>
               <h2 className="text-xl font-semibold">{filteredDestinations.length} destinations found</h2>
               {Object.values(filters).some(value => 
@@ -72,16 +143,55 @@ const Destinations = () => {
                 <p className="text-sm text-muted-foreground">Filtered results based on your preferences</p>
               )}
             </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={refreshDestinations}
-              disabled={loading}
-              className="flex items-center gap-1"
-            >
-              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-              Refresh
-            </Button>
+            
+            <div className="flex items-center gap-3">
+              {/* Sort Dropdown */}
+              <Select defaultValue="price-asc" onValueChange={handleSortChange}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="price-asc">Price: Low to High</SelectItem>
+                  <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                  <SelectItem value="days-asc">Duration: Short to Long</SelectItem>
+                  <SelectItem value="days-desc">Duration: Long to Short</SelectItem>
+                  <SelectItem value="popularity-desc">Most Popular</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              {/* Toggle View Type */}
+              <div className="flex rounded-md overflow-hidden border border-input">
+                <Button 
+                  variant={viewType === 'list' ? 'default' : 'outline'} 
+                  className="rounded-none"
+                  onClick={() => setViewType('list')}
+                  size="sm"
+                >
+                  <List className="h-4 w-4 mr-1" />
+                  List
+                </Button>
+                <Button 
+                  variant={viewType === 'map' ? 'default' : 'outline'} 
+                  className="rounded-none"
+                  onClick={() => setViewType('map')}
+                  size="sm"
+                >
+                  <MapIcon className="h-4 w-4 mr-1" />
+                  Map
+                </Button>
+              </div>
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={refreshDestinations}
+                disabled={loading}
+                className="flex items-center gap-1"
+              >
+                <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+            </div>
           </div>
           
           {loading ? (
@@ -100,41 +210,74 @@ const Destinations = () => {
                 </div>
               ))}
             </div>
-          ) : filteredDestinations.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-              {filteredDestinations.map((destination, index) => (
-                <Link to={`/destination/${destination.id}`} key={destination.id || index} className="block h-full">
-                  <DestinationCard 
-                    id={destination.id}
-                    image={destination.image}
-                    title={destination.title}
-                    location={destination.location}
-                    price={destination.price}
-                    days={destination.days}
-                    category={destination.category}
-                  />
-                </Link>
-              ))}
-            </div>
           ) : (
-            <div className="text-center py-12 border border-border rounded-lg bg-card">
-              <h3 className="text-xl font-medium mb-2">No destinations found</h3>
-              <p className="text-muted-foreground mb-4">
-                Try adjusting your filters to find destinations that match your preferences.
-              </p>
-              <button 
-                className="text-musafir-spiritual font-medium"
-                onClick={() => handleFilterChange({
-                  searchQuery: '',
-                  location: '',
-                  budget: [0, 5000],
-                  days: [1, 14],
-                  categories: [],
-                })}
-              >
-                Clear all filters
-              </button>
-            </div>
+            <>
+              {viewType === 'list' ? (
+                filteredDestinations.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                    {filteredDestinations.map((destination, index) => (
+                      <div key={destination.id || index} className="relative">
+                        <Link to={`/destination/${destination.id}`} className="block h-full">
+                          <DestinationCard 
+                            id={destination.id}
+                            image={destination.image}
+                            title={destination.title}
+                            location={destination.location}
+                            price={destination.price}
+                            days={destination.days}
+                            category={destination.category}
+                          />
+                        </Link>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="absolute top-3 right-3 bg-background/80 backdrop-blur-sm z-10"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            toggleFavorite(destination.id);
+                          }}
+                        >
+                          <Heart 
+                            className={`h-4 w-4 ${favorites.includes(destination.id) ? 'fill-red-500 text-red-500' : ''}`} 
+                          />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 border border-border rounded-lg bg-card">
+                    <h3 className="text-xl font-medium mb-2">No destinations found</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Try adjusting your filters to find destinations that match your preferences.
+                    </p>
+                    <button 
+                      className="text-musafir-spiritual font-medium"
+                      onClick={() => handleFilterChange({
+                        searchQuery: '',
+                        location: '',
+                        budget: [0, 5000],
+                        days: [1, 14],
+                        categories: [],
+                      })}
+                    >
+                      Clear all filters
+                    </button>
+                  </div>
+                )
+              ) : (
+                <div className="mb-10 border border-border rounded-lg overflow-hidden h-[500px]">
+                  <DestinationMap locations={filteredDestinations} />
+                </div>
+              )}
+            </>
+          )}
+          
+          {/* Travel Insights Section */}
+          <TravelInsights />
+          
+          {/* Related Destinations */}
+          {filteredDestinations.length > 0 && (
+            <RelatedDestinations currentDestinations={filteredDestinations} />
           )}
         </div>
       </main>
