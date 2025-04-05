@@ -1,6 +1,6 @@
 
 // Import all destination data
-import { trekDestinations } from './trekking-destinations';
+import { trekkingDestinations } from './trekking-destinations';
 import { hikingDestinations } from './hiking-destinations';
 import { meditationDestinations } from './meditation-destinations';
 import { raftingDestinations } from './rafting-destinations';
@@ -10,7 +10,7 @@ import { Destinations } from './types';
 
 // Combine all destinations
 export const destinations: Destinations = [
-  ...trekDestinations,
+  ...trekkingDestinations,
   ...hikingDestinations,
   ...meditationDestinations,
   ...raftingDestinations,
@@ -20,7 +20,7 @@ export const destinations: Destinations = [
 
 // Export individual categories for direct access
 export {
-  trekDestinations,
+  trekkingDestinations,
   hikingDestinations,
   meditationDestinations,
   raftingDestinations,
