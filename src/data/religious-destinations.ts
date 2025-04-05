@@ -1,4 +1,3 @@
-
 import { Destination } from './types';
 
 export const religiousDestinations: Destination[] = [
@@ -476,6 +475,234 @@ export const religiousDestinations: Destination[] = [
         duration: "30-40 minutes",
         schedule: "Local buses every 1-2 hours or shared taxis",
         link: "https://hptdc.in"
+      }
+    ]
+  },
+  {
+    id: "kailash-mansarovar-yatra",
+    image: "https://images.unsplash.com/photo-1599058917765-a780eda07a3e",
+    title: "Kailash Mansarovar Yatra",
+    location: "Tibet (via Uttarakhand)",
+    price: 4800,
+    days: 13,
+    category: "religious",
+    categoryLabel: "Religious",
+    categoryColor: "bg-musafir-spiritual",
+    description: "An ancient pilgrimage to Mount Kailash and Lake Mansarovar, considered sacred in Hindu, Buddhist, Jain and Bon traditions.",
+    longDescription: "The Kailash Mansarovar Yatra is one of the most revered pilgrimages in Asia, taking devotees to the sacred Mount Kailash (6,638m) and Lake Mansarovar in Tibet. Mount Kailash is considered the abode of Lord Shiva in Hindu tradition, the Buddha Demchok in Buddhism, and a sacred site for Jains and followers of Bon. This 13-day budget pilgrimage begins from Uttarakhand, crossing into Tibet through the Lipulekh Pass. The journey includes the sacred Parikrama (circumambulation) of Mount Kailash, covering 52 kilometers over three days, and a holy dip in Lake Mansarovar, believed to cleanse all sins. Despite being designed for budget travelers, the itinerary provides a complete spiritual experience with proper acclimatization for high altitude.",
+    highlights: [
+      "Complete the sacred Parikrama (circumambulation) of Mount Kailash",
+      "Take a holy dip in the sacred Lake Mansarovar",
+      "Visit Yam Dwar, Dirapuk Monastery and Zutulpuk Monastery",
+      "Witness spectacular Himalayan landscapes and pristine natural beauty",
+      "Experience the spiritual energy of a site revered by four religions"
+    ],
+    bestTimeToVisit: "May to September, when the weather is milder and the Lipulekh pass is open. The rest of the year sees heavy snowfall making the journey impossible.",
+    itinerary: [
+      {
+        title: "Arrival in Delhi",
+        description: "Arrive in Delhi and attend a detailed briefing about the yatra, altitude sickness prevention, and necessary preparations. Meet fellow pilgrims and prepare mentally for the spiritual journey ahead.",
+        activities: [
+          "Orientation session with experienced tour guides",
+          "Medical checkup and fitness assessment",
+          "Distribution of necessary permits and documents",
+          "Group introduction and briefing about the journey"
+        ],
+        meals: "Welcome dinner",
+        accommodation: "Budget hotel in Delhi"
+      },
+      {
+        title: "Delhi to Kathgodam to Almora",
+        description: "Early morning train journey from Delhi to Kathgodam, followed by a scenic road journey to Almora. Evening free for acclimatization and local temple visits.",
+        activities: [
+          "Train journey from Delhi to Kathgodam",
+          "Road journey through picturesque Kumaon hills",
+          "Visit to Kasar Devi Temple in Almora",
+          "Rest and acclimatization"
+        ],
+        meals: "Breakfast, Dinner",
+        accommodation: "Basic guesthouse in Almora"
+      },
+      {
+        title: "Almora to Dharchula",
+        description: "Full day journey from Almora to Dharchula, a town on the Indo-Nepal border. The route passes through beautiful valleys and alongside the Kali River, offering stunning views of the lower Himalayas.",
+        activities: [
+          "Scenic drive through Kumaon hills",
+          "Rest stops at Berinag and Thal",
+          "First view of the Kali River",
+          "Evening meditation session in Dharchula"
+        ],
+        meals: "Breakfast, Packed lunch, Dinner",
+        accommodation: "Simple guesthouse in Dharchula"
+      },
+      {
+        title: "Dharchula to Tawaghat to Budhi",
+        description: "Continue the journey from Dharchula to Tawaghat by road, then trek to Budhi village. This is the beginning of the actual pilgrimage route, following ancient paths used by pilgrims for centuries.",
+        activities: [
+          "Short drive to Tawaghat",
+          "4-5 hour trek to Budhi village",
+          "Crossing suspension bridges over mountain streams",
+          "Evening prayers and group discussion"
+        ],
+        meals: "Breakfast, Packed lunch, Dinner",
+        accommodation: "Basic pilgrim huts in Budhi"
+      },
+      {
+        title: "Budhi to Gunji",
+        description: "Trek from Budhi to Gunji through beautiful valleys and forests. Gunji is a significant point on the yatra route and offers the first distant views of the Tibetan plateau.",
+        activities: [
+          "6-7 hour trek through varied terrain",
+          "Rest at Malpa and Lamari",
+          "First views of the Tibetan plateau",
+          "Evening acclimatization exercises"
+        ],
+        meals: "Breakfast, Packed lunch, Dinner",
+        accommodation: "Basic pilgrim huts in Gunji"
+      },
+      {
+        title: "Gunji to Nabhidhang",
+        description: "Trek from Gunji to Nabhidhang, the last Indian settlement before the Lipulekh Pass. The terrain becomes increasingly barren as you approach higher altitudes, offering a stark beauty.",
+        activities: [
+          "5-6 hour trek on gradual ascent",
+          "ITBP checkpost formalities",
+          "Rest and final preparations for crossing into Tibet",
+          "Special prayers for a safe journey ahead"
+        ],
+        meals: "Breakfast, Packed lunch, Dinner",
+        accommodation: "Basic accommodation in Nabhidhang"
+      },
+      {
+        title: "Nabhidhang to Taklakot via Lipulekh Pass",
+        description: "Cross the Lipulekh Pass (5,200m) and enter Tibet, then drive to Taklakot. This is one of the most challenging and rewarding days of the journey, crossing from India into Tibet at high altitude.",
+        activities: [
+          "Trek to Lipulekh Pass (5,200m)",
+          "Border crossing formalities",
+          "Drive to Taklakot in Chinese vehicles",
+          "Rest and acclimatization"
+        ],
+        meals: "Breakfast, Packed lunch, Dinner",
+        accommodation: "Basic guesthouse in Taklakot"
+      },
+      {
+        title: "Taklakot to Lake Mansarovar",
+        description: "Drive from Taklakot to Lake Mansarovar. Perform puja and take a holy dip in the sacred lake, believed to cleanse all sins. The first sight of the turquoise waters of Mansarovar is a deeply moving experience for most pilgrims.",
+        activities: [
+          "Drive to Lake Mansarovar",
+          "Holy dip in Mansarovar Lake",
+          "Parikrama (partial) of the lake",
+          "Evening Havan and prayers by the lakeside"
+        ],
+        meals: "Breakfast, Lunch, Dinner",
+        accommodation: "Basic guesthouse near Lake Mansarovar"
+      },
+      {
+        title: "Lake Mansarovar to Darchen",
+        description: "Morning prayers at Lake Mansarovar, then drive to Darchen, the base for Mount Kailash Parikrama. Prepare mentally and physically for the challenging three-day circumambulation of Mount Kailash.",
+        activities: [
+          "Sunrise prayers at Lake Mansarovar",
+          "Drive to Darchen",
+          "First view of Mount Kailash",
+          "Preparation for Kailash Parikrama"
+        ],
+        meals: "Breakfast, Lunch, Dinner",
+        accommodation: "Basic guesthouse in Darchen"
+      },
+      {
+        title: "Kailash Parikrama Day 1: Darchen to Dirapuk",
+        description: "Begin the Kailash Parikrama, trekking from Darchen to Dirapuk. Get a close view of the North Face of Mount Kailash, considered most auspicious in Hindu tradition.",
+        activities: [
+          "Begin Parikrama from Yam Dwar",
+          "Trek to Dirapuk (18km, 6-7 hours)",
+          "Views of the sacred North Face of Kailash",
+          "Evening prayers at Dirapuk Monastery"
+        ],
+        meals: "Breakfast, Packed lunch, Dinner",
+        accommodation: "Basic guesthouse/monastery guest room in Dirapuk"
+      },
+      {
+        title: "Kailash Parikrama Day 2: Dirapuk to Zutulpuk",
+        description: "The most challenging day of the Parikrama, crossing Dolma La Pass (5,630m) and descending to Zutulpuk. This day is considered the spiritual climax of the entire pilgrimage.",
+        activities: [
+          "Trek over Dolma La Pass (5,630m)",
+          "Visit to Gauri Kund",
+          "Descent to Zutulpuk Monastery",
+          "Evening rest and reflection"
+        ],
+        meals: "Breakfast, Packed lunch, Dinner",
+        accommodation: "Basic guesthouse/monastery guest room in Zutulpuk"
+      },
+      {
+        title: "Kailash Parikrama Day 3 and Return to Taklakot",
+        description: "Complete the Parikrama by trekking from Zutulpuk to Darchen, then drive back to Taklakot. This marks the completion of the sacred circumambulation of Mount Kailash.",
+        activities: [
+          "Final leg of Parikrama to Darchen",
+          "Completion ceremonies",
+          "Drive back to Taklakot",
+          "Group sharing of experiences"
+        ],
+        meals: "Breakfast, Packed lunch, Dinner",
+        accommodation: "Basic guesthouse in Taklakot"
+      },
+      {
+        title: "Return Journey Begins",
+        description: "Begin the return journey from Tibet to India, retracing the route back through Lipulekh Pass. Reflect on the profound spiritual experiences of the pilgrimage.",
+        activities: [
+          "Drive to Lipulekh border",
+          "Cross back into India",
+          "Descend to Gunji",
+          "Evening thanksgiving prayers"
+        ],
+        meals: "Breakfast, Packed lunch, Dinner",
+        accommodation: "Basic pilgrim huts in Gunji"
+      }
+    ],
+    accommodation: [
+      {
+        name: "Pilgrim Guesthouses",
+        description: "Simple, clean accommodations designed for pilgrims. Facilities are basic but adequate, with shared bathrooms and simple vegetarian meals provided.",
+        location: "Various locations along the route",
+        amenities: ["Clean bedding", "Shared bathrooms", "Hot water (limited)", "Vegetarian meals"]
+      },
+      {
+        name: "Monastery Guest Rooms",
+        description: "Basic rooms within or attached to monasteries along the Kailash Parikrama route. These accommodations are very simple but offer a unique spiritual experience.",
+        location: "Dirapuk and Zutulpuk",
+        amenities: ["Basic bedding", "Shared facilities", "Monastery atmosphere", "Buddhist hospitality"]
+      }
+    ],
+    gallery: [
+      "https://images.unsplash.com/photo-1599058917765-a780eda07a3e",
+      "https://images.unsplash.com/photo-1494548162494-384bba4ab999",
+      "https://images.unsplash.com/photo-1503424886307-b090f38422b2",
+      "https://images.unsplash.com/photo-1604608672515-1fd768db76e0",
+      "https://images.unsplash.com/photo-1461723693939-c5ea1e093a89"
+    ],
+    coordinates: [31.0672, 81.3112], // Mount Kailash coordinates
+    locationDescription: "Mount Kailash is located in the Tibet Autonomous Region of China, near the border with India and Nepal. This pilgrimage route typically begins from Uttarakhand in India, crossing into Tibet through the Lipulekh Pass, and then proceeding to Lake Mansarovar and Mount Kailash.",
+    transportation: [
+      {
+        type: "train",
+        from: "Delhi",
+        price: 800,
+        duration: "6-7 hours",
+        schedule: "Delhi to Kathgodam, Shatabdi Express (daily at 06:15)",
+        link: "https://www.irctc.co.in"
+      },
+      {
+        type: "bus",
+        from: "Kathgodam",
+        price: 1200,
+        duration: "10-12 hours",
+        schedule: "Shared vehicles to Dharchula, multiple departures daily",
+        link: "https://tourism.gov.in/kailash-mansarovar-yatra"
+      },
+      {
+        type: "jeep",
+        from: "Dharchula",
+        price: 800,
+        duration: "3-4 hours",
+        schedule: "Dharchula to Tawaghat, morning departures",
+        link: "https://tourism.gov.in/kailash-mansarovar-yatra"
       }
     ]
   }

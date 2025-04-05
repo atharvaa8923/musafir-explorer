@@ -30,13 +30,25 @@ export interface Destination {
   coordinates: [number, number];
   locationDescription: string;
   transportation: {
-    type: 'bus' | 'train' | 'jeep' | 'flight' | 'shared taxi' | 'shared sumo' | 'ferry' | 'local bus';
+    type: 'bus' | 'train' | 'jeep' | 'flight' | 'shared taxi' | 'shared sumo' | 'ferry' | 'local bus' | 'helicopter';
     from: string;
     price: number;
     duration: string;
     schedule: string;
     link: string;
+    provider?: string;
+    amenities?: string[];
+    rating?: number;
   }[];
+  specialFeatures?: {
+    pilgrimageType?: 'temple' | 'mountain' | 'river' | 'sacred site';
+    rituals?: string[];
+    significance?: string;
+    difficulty?: 'easy' | 'moderate' | 'challenging' | 'difficult';
+    seasonality?: string;
+    permits?: string[];
+    restrictions?: string[];
+  };
 }
 
 export type Destinations = Destination[];

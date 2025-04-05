@@ -1,66 +1,73 @@
 
 import React from 'react';
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { IndianRupee, Clock, CalendarIcon } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
-import { getTransportIcon } from './TransportUtils';
+import { Clock, MapPin, IndianRupee, Calendar, ExternalLink } from "lucide-react";
 import useTranslation from '@/hooks/useTranslation';
-import { TransportOption } from './TransportUtils';
+import { getTransportIcon, TransportOption } from './TransportUtils';
 
 interface TransportOptionCardProps {
   option: TransportOption;
   destination: string;
   buttonColorClass?: string;
-  customButtonText?: string;
+  buttonText?: string;
 }
 
-const TransportOptionCard: React.FC<TransportOptionCardProps> = ({ 
+const TransportOptionCard = ({ 
   option, 
   destination, 
-  buttonColorClass = "bg-musafir-trekking hover:bg-musafir-trekking/90",
-  customButtonText
-}) => {
+  buttonColorClass = "bg-primary", 
+  buttonText 
+}: TransportOptionCardProps) => {
   const { t } = useTranslation();
-
-  const handleBooking = () => {
-    window.open(option.link, '_blank');
-    toast({
-      title: `${option.type} booking initiated`,
-      description: `You are being redirected to book transportation to ${destination}.`,
-    });
-  };
-
+  
   return (
-    <div className="border border-border rounded-lg p-3">
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center">
-          {getTransportIcon(option.type, "mr-2 h-5 w-5 text-musafir-trekking")}
-          <span className="font-medium">{option.type} {t('from')} {option.from}</span>
+    <Card className="mb-4 hover:shadow-md transition-shadow">
+      <CardContent className="p-4">
+        <div className="flex justify-between items-start">
+          <div className="flex items-center">
+            <div className="mr-3 text-muted-foreground">
+              {getTransportIcon(option.type, "h-6 w-6")}
+            </div>
+            <div>
+              <h3 className="font-medium text-lg capitalize">{option.type}</h3>
+              <div className="flex items-center mt-1 text-sm text-muted-foreground">
+                <MapPin size={14} className="mr-1" />
+                <span>{option.from} to {destination}</span>
+              </div>
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="font-medium text-lg flex items-center">
+              <IndianRupee size={16} />
+              <span>{option.price}</span>
+            </div>
+          </div>
         </div>
-        <span className="flex items-center text-musafir-spiritual font-medium">
-          <IndianRupee className="h-4 w-4 mr-1" />
-          {option.price}
-        </span>
-      </div>
-      
-      <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground mb-3">
-        <div className="flex items-center">
-          <Clock className="h-4 w-4 mr-1" />
-          <span>{option.duration}</span>
+        
+        <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
+          <div className="flex items-center">
+            <Clock size={14} className="mr-2 text-muted-foreground" />
+            <span>{option.duration}</span>
+          </div>
+          {option.schedule && (
+            <div className="flex items-center">
+              <Calendar size={14} className="mr-2 text-muted-foreground" />
+              <span>{option.schedule}</span>
+            </div>
+          )}
         </div>
-        <div className="flex items-center">
-          <CalendarIcon className="h-4 w-4 mr-1" />
-          <span>{option.schedule}</span>
+        
+        <div className="mt-4">
+          <a href={option.link} target="_blank" rel="noopener noreferrer">
+            <Button className={`w-full ${buttonColorClass} flex items-center justify-center`}>
+              {buttonText || t('book_now')}
+              <ExternalLink size={14} className="ml-2" />
+            </Button>
+          </a>
         </div>
-      </div>
-      
-      <Button 
-        className={`w-full ${buttonColorClass}`}
-        onClick={handleBooking}
-      >
-        {customButtonText || `${t('book')} ${option.type}`}
-      </Button>
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
