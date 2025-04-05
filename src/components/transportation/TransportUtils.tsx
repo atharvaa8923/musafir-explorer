@@ -1,5 +1,7 @@
 
+import React from 'react';
 import { TransportationOption } from '@/services/transportationApiService';
+import { Bus, Train, Plane, Ship, Car } from 'lucide-react';
 
 export interface TransportationOptionsProps {
   destination: string;
@@ -11,6 +13,15 @@ export interface TransportationOptionsProps {
     schedule?: string;
     link?: string;
   }>;
+}
+
+export interface TransportOption {
+  type: string;
+  from: string;
+  price: number;
+  duration: string;
+  schedule?: string;
+  link?: string;
 }
 
 export const groupTransportOptions = (options: TransportationOptionsProps['options']) => {
@@ -29,4 +40,24 @@ export const groupTransportOptions = (options: TransportationOptionsProps['optio
     waterOptions,
     roadOptions
   };
+};
+
+export const getTransportIcon = (type: string, className?: string) => {
+  switch (type.toLowerCase()) {
+    case 'bus':
+    case 'local bus':
+      return <Bus className={className} />;
+    case 'train':
+      return <Train className={className} />;
+    case 'flight':
+      return <Plane className={className} />;
+    case 'ferry':
+      return <Ship className={className} />;
+    case 'jeep':
+    case 'shared taxi':
+    case 'shared sumo':
+      return <Car className={className} />;
+    default:
+      return <Car className={className} />;
+  }
 };
