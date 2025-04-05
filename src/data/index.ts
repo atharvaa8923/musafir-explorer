@@ -1,45 +1,82 @@
 
-import { trekkingDestinations } from './trekking-destinations';
+// Import all destination data
+import { trekDestinations } from './trek-destinations';
 import { hikingDestinations } from './hiking-destinations';
-import { raftingDestinations } from './rafting-destinations';
 import { meditationDestinations } from './meditation-destinations';
+import { raftingDestinations } from './rafting-destinations';
 import { religiousDestinations } from './religious-destinations';
 import { newDestinations } from './new-destinations';
-import { Destination, Destinations } from './types';
+import { Destinations } from './types';
 
-// Export all destination categories
-export { trekkingDestinations } from './trekking-destinations';
-export { hikingDestinations } from './hiking-destinations';
-export { raftingDestinations } from './rafting-destinations';
-export { meditationDestinations } from './meditation-destinations';
-export { religiousDestinations } from './religious-destinations';
-export { newDestinations } from './new-destinations';
-export type { Destination, Destinations } from './types';
-
-// Combine all destinations into a single array
-export const destinations: Destination[] = [
-  ...trekkingDestinations,
+// Combine all destinations
+export const destinations: Destinations = [
+  ...trekDestinations,
   ...hikingDestinations,
-  ...raftingDestinations,
   ...meditationDestinations,
+  ...raftingDestinations,
   ...religiousDestinations,
   ...newDestinations
 ];
 
-// Get destinations by category
-export const getDestinationsByCategory = (category: string): Destination[] => {
-  switch (category) {
-    case 'trekking':
-      return trekkingDestinations;
-    case 'hiking':
-      return hikingDestinations;
-    case 'rafting':
-      return raftingDestinations;
-    case 'meditation':
-      return meditationDestinations;
-    case 'religious':
-      return religiousDestinations;
-    default:
-      return destinations;
-  }
+// Export individual categories for direct access
+export {
+  trekDestinations,
+  hikingDestinations,
+  meditationDestinations,
+  raftingDestinations,
+  religiousDestinations,
+  newDestinations
+};
+
+// Functions to get destinations by category
+export const getDestinationsByCategory = (category: string): Destinations => {
+  return destinations.filter(destination => destination.category === category);
+};
+
+// Functions to get destinations by price range
+export const getDestinationsByPriceRange = (min: number, max: number): Destinations => {
+  return destinations.filter(destination => destination.price >= min && destination.price <= max);
+};
+
+// Functions to get destinations by duration range
+export const getDestinationsByDurationRange = (min: number, max: number): Destinations => {
+  return destinations.filter(destination => destination.days >= min && destination.days <= max);
+};
+
+// Functions to get destinations by location
+export const getDestinationsByLocation = (location: string): Destinations => {
+  return destinations.filter(destination => 
+    destination.location.toLowerCase().includes(location.toLowerCase())
+  );
+};
+
+// Function to get a specific destination by ID
+export const getDestinationById = (id: string) => {
+  return destinations.find(destination => destination.id === id);
+};
+
+// Get featured destinations (can modify logic as needed)
+export const getFeaturedDestinations = (count: number = 4): Destinations => {
+  return destinations.slice(0, count);
+};
+
+// Get trending destinations (can modify logic as needed)
+export const getTrendingDestinations = (count: number = 4): Destinations => {
+  return [...destinations].sort(() => 0.5 - Math.random()).slice(0, count);
+};
+
+// Get budget-friendly destinations
+export const getBudgetDestinations = (maxPrice: number = 3000, count: number = 4): Destinations => {
+  return destinations
+    .filter(destination => destination.price <= maxPrice)
+    .sort((a, b) => a.price - b.price)
+    .slice(0, count);
+};
+
+// Get quick getaway destinations (short duration trips)
+export const getQuickGetaways = (maxDays: number = 3, count: number = 4): Destinations => {
+  return destinations
+    .filter(destination => destination.days <= maxDays)
+    .sort((a, b) => a.days - b.days)
+    .slice(0, count);
 };

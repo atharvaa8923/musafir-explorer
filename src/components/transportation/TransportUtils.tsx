@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { TransportationOption } from '@/services/transportationApiService';
-import { Bus, Train, Plane, Ship, Car, Helicopter } from 'lucide-react';
+import { Bus, Train, Plane, Ship, Car } from 'lucide-react';
 
 export interface TransportationOptionsProps {
   destination: string;
@@ -50,9 +50,8 @@ export const getTransportIcon = (type: string, className?: string) => {
     case 'train':
       return <Train className={className} />;
     case 'flight':
-      return <Plane className={className} />;
     case 'helicopter':
-      return <Helicopter className={className} />;
+      return <Plane className={className} />;
     case 'ferry':
       return <Ship className={className} />;
     case 'jeep':
