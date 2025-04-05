@@ -3,6 +3,7 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import ChatBot from "@/components/ChatBot";
+import AnimatedTraveler from "@/components/AnimatedTraveler";
 import {
   FeaturedDestinations,
   FeaturesSection,
@@ -17,7 +18,10 @@ const Index = () => {
     <div className="min-h-screen flex flex-col">
       <Navbar />
       <main>
-        <Hero />
+        <div className="relative">
+          <Hero />
+          <AnimatedTraveler />
+        </div>
         <FeaturedDestinations />
         <FeaturesSection />
         <ToolsSection />
