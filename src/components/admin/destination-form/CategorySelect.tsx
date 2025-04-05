@@ -2,7 +2,7 @@
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import FormField from './FormField';
-import { CATEGORY_INFO, CategoryType } from './categoryUtils';
+import { categories, CategoryType } from './categoryUtils';
 
 interface CategorySelectProps {
   value: CategoryType;
@@ -20,8 +20,8 @@ const CategorySelect = ({ value, onChange }: CategorySelectProps) => {
           <SelectValue placeholder="Select category" />
         </SelectTrigger>
         <SelectContent>
-          {Object.entries(CATEGORY_INFO).map(([key, info]) => (
-            <SelectItem key={key} value={key}>{info.label}</SelectItem>
+          {categories.map((category) => (
+            <SelectItem key={category.value} value={category.value}>{category.label}</SelectItem>
           ))}
         </SelectContent>
       </Select>

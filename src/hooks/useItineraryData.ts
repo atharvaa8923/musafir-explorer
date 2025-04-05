@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import databaseService from '@/services/databaseService';
 import transportationApiService from '@/services/transportationApiService';

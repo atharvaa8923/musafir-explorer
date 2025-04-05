@@ -30,7 +30,7 @@ export interface Destination {
   coordinates: [number, number];
   locationDescription: string;
   transportation: {
-    type: 'bus' | 'train' | 'jeep' | 'flight' | 'shared taxi' | 'shared sumo' | 'ferry' | 'local bus' | 'helicopter';
+    type: 'bus' | 'train' | 'jeep' | 'flight' | 'shared taxi' | 'shared sumo' | 'ferry' | 'local bus' | 'helicopter' | 'taxi';
     from: string;
     price: number;
     duration: string;

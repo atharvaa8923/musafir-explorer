@@ -1,6 +1,6 @@
 
 // Import all destination data
-import { trekDestinations } from './trek-destinations';
+import { trekDestinations } from './trekking-destinations';
 import { hikingDestinations } from './hiking-destinations';
 import { meditationDestinations } from './meditation-destinations';
 import { raftingDestinations } from './rafting-destinations';

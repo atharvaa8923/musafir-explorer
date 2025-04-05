@@ -1,7 +1,6 @@
-
 export interface TransportationOption {
   id: string;
-  type: 'bus' | 'train' | 'jeep' | 'flight' | 'shared taxi' | 'shared sumo' | 'ferry' | 'local bus' | 'helicopter';
+  type: 'bus' | 'train' | 'jeep' | 'flight' | 'shared taxi' | 'shared sumo' | 'ferry' | 'local bus' | 'helicopter' | 'taxi';
   from: string;
   to: string;
   price: number;
@@ -35,6 +34,32 @@ class TransportationApiService {
       return await this.fetchFromAPI(destination);
     } catch (error) {
       console.error('Error fetching transportation options:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Fetch bus options for a destination (used by legacy code)
+   */
+  async fetchBusOptions(destination: string): Promise<TransportationOption[]> {
+    try {
+      const options = await this.fetchFromAPI(destination);
+      return options.filter(option => option.type === 'bus');
+    } catch (error) {
+      console.error('Error fetching bus options:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Fetch train options for a destination (used by legacy code)
+   */
+  async fetchTrainOptions(destination: string): Promise<TransportationOption[]> {
+    try {
+      const options = await this.fetchFromAPI(destination);
+      return options.filter(option => option.type === 'train');
+    } catch (error) {
+      console.error('Error fetching train options:', error);
       return [];
     }
   }

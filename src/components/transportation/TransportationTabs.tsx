@@ -29,7 +29,7 @@ const TransportationTabs = ({ destination, transportOptions }: TransportationTab
     const fetchAdditionalOptions = async () => {
       setLoading(true);
       try {
-        const apiOptions = await transportationApiService.fetchAllTransportOptions(destination);
+        const apiOptions = await transportationApiService.getTransportationOptions(destination);
         
         // Convert API options to match the expected format
         const formattedOptions = apiOptions.map(opt => ({

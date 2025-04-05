@@ -1,7 +1,6 @@
-
 import { Destination, Destinations, SearchFilters } from './types';
 import { API_ENDPOINTS, API_KEYS } from '@/config/apiConfig';
-import transportationApiService from './transportationApiService';
+import transportationApiService from '@/services/transportationApiService';
 
 // API configuration
 const API_ENDPOINT = API_ENDPOINTS.DESTINATIONS;
