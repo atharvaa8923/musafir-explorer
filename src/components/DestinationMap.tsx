@@ -8,8 +8,10 @@ import { toast } from '@/components/ui/use-toast';
 import { API_ENDPOINTS } from '@/config/apiConfig';
 import { Download, Map, Navigation, X, Layers } from 'lucide-react';
 import { useOfflineMaps } from '@/hooks/useOfflineMaps';
+import { Destination } from '@/data/types';
 
-interface DestinationMapProps {
+// Original props interface for single location
+interface SingleLocationMapProps {
   location: [number, number];
   title?: string;
   showRoutes?: boolean;
@@ -20,12 +22,20 @@ interface DestinationMapProps {
   }>;
 }
 
-const DestinationMap = ({ 
-  location, 
-  title, 
-  showRoutes = false,
-  pointsOfInterest = []
-}: DestinationMapProps) => {
+// New interface for multiple locations
+interface MultipleLocationsMapProps {
+  locations: Destination[];
+}
+
+// Union type to support both use cases
+type DestinationMapProps = SingleLocationMapProps | MultipleLocationsMapProps;
+
+// Type guard to check which props are being used
+function isMultipleLocationsProps(props: DestinationMapProps): props is MultipleLocationsMapProps {
+  return 'locations' in props;
+}
+
+const DestinationMap = (props: DestinationMapProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [mapboxToken, setMapboxToken] = useState<string>(localStorage.getItem('mapbox_token') || '');
@@ -47,11 +57,16 @@ const DestinationMap = ({
     try {
       mapboxgl.accessToken = mapboxToken;
       
+      // Initialize map with appropriate center based on props
+      const initialCenter = isMultipleLocationsProps(props) && props.locations.length > 0 && props.locations[0].coordinates 
+        ? props.locations[0].coordinates
+        : !isMultipleLocationsProps(props) ? props.location : [78.9629, 20.5937]; // Default to center of India if no locations
+      
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/outdoors-v12',
-        center: location,
-        zoom: 10,
+        center: initialCenter,
+        zoom: isMultipleLocationsProps(props) ? 4 : 10, // Zoom out for multiple locations
         pitch: 50,
       });
 
@@ -74,31 +89,67 @@ const DestinationMap = ({
         'top-right'
       );
 
-      // Add marker at the main location
-      const popup = new mapboxgl.Popup({ offset: 25 })
-        .setHTML(`<h3 class="font-bold">${title || 'Destination'}</h3>`)
-        .setMaxWidth('300px');
-
-      new mapboxgl.Marker({ color: '#E57373' })
-        .setLngLat(location)
-        .setPopup(popup)
-        .addTo(map.current);
-
-      // Add points of interest if available
-      if (pointsOfInterest && pointsOfInterest.length > 0) {
-        pointsOfInterest.forEach((poi, index) => {
-          const poiPopup = new mapboxgl.Popup({ offset: 25 })
+      // Add markers based on props type
+      if (isMultipleLocationsProps(props)) {
+        // Multiple locations case
+        const bounds = new mapboxgl.LngLatBounds();
+        
+        props.locations.forEach((dest) => {
+          if (!dest.coordinates) return;
+          
+          // Add marker
+          const popup = new mapboxgl.Popup({ offset: 25 })
             .setHTML(`
-              <h3 class="font-bold">${poi.title}</h3>
-              ${poi.description ? `<p>${poi.description}</p>` : ''}
+              <h3 class="font-bold">${dest.title}</h3>
+              <p>${dest.location}</p>
+              <p class="text-musafir-spiritual font-medium">₹${dest.price} | ${dest.days} days</p>
             `)
             .setMaxWidth('300px');
 
-          new mapboxgl.Marker({ color: '#4CAF50' })
-            .setLngLat(poi.coordinates)
-            .setPopup(poiPopup)
-            .addTo(map.current);
+          new mapboxgl.Marker({ color: '#E57373' })
+            .setLngLat(dest.coordinates)
+            .setPopup(popup)
+            .addTo(map.current!);
+          
+          // Extend bounds to include this point
+          bounds.extend(dest.coordinates);
         });
+        
+        // Fit bounds to show all markers if we have any
+        if (!bounds.isEmpty()) {
+          map.current.fitBounds(bounds, {
+            padding: 50,
+            maxZoom: 8
+          });
+        }
+      } else {
+        // Single location case
+        const title = props.title || 'Destination';
+        const popup = new mapboxgl.Popup({ offset: 25 })
+          .setHTML(`<h3 class="font-bold">${title}</h3>`)
+          .setMaxWidth('300px');
+
+        new mapboxgl.Marker({ color: '#E57373' })
+          .setLngLat(props.location)
+          .setPopup(popup)
+          .addTo(map.current);
+
+        // Add points of interest if available
+        if (props.pointsOfInterest && props.pointsOfInterest.length > 0) {
+          props.pointsOfInterest.forEach((poi, index) => {
+            const poiPopup = new mapboxgl.Popup({ offset: 25 })
+              .setHTML(`
+                <h3 class="font-bold">${poi.title}</h3>
+                ${poi.description ? `<p>${poi.description}</p>` : ''}
+              `)
+              .setMaxWidth('300px');
+
+            new mapboxgl.Marker({ color: '#4CAF50' })
+              .setLngLat(poi.coordinates)
+              .setPopup(poiPopup)
+              .addTo(map.current!);
+          });
+        }
       }
 
       // Add atmosphere and fog effects
@@ -128,11 +179,11 @@ const DestinationMap = ({
       console.error("Error initializing map:", error);
       setShowTokenInput(true);
     }
-  }, [location, mapboxToken, title, pointsOfInterest]);
+  }, [props, mapboxToken]);
 
   // Effect for showing routes when showRoutes is enabled
   useEffect(() => {
-    if (!showRoutes || !map.current || !mapboxToken || !routeVisible || selectedPoint === null) return;
+    if (isMultipleLocationsProps(props) || !map.current || !mapboxToken || !routeVisible || selectedPoint === null) return;
 
     // Clear existing routes
     if (map.current.getSource('route')) {
@@ -140,8 +191,8 @@ const DestinationMap = ({
       map.current.removeSource('route');
     }
 
-    const destinationCoords = selectedPoint !== null && pointsOfInterest[selectedPoint] 
-      ? pointsOfInterest[selectedPoint].coordinates 
+    const destinationCoords = selectedPoint !== null && props.pointsOfInterest && props.pointsOfInterest[selectedPoint] 
+      ? props.pointsOfInterest[selectedPoint].coordinates 
       : null;
 
     if (!destinationCoords) return;
@@ -150,7 +201,7 @@ const DestinationMap = ({
     const fetchRoute = async () => {
       try {
         const response = await fetch(
-          `${API_ENDPOINTS.MAPS.DIRECTIONS}/walking/${location[0]},${location[1]};${destinationCoords[0]},${destinationCoords[1]}?steps=true&geometries=geojson&access_token=${mapboxToken}`
+          `${API_ENDPOINTS.MAPS.DIRECTIONS}/walking/${props.location[0]},${props.location[1]};${destinationCoords[0]},${destinationCoords[1]}?steps=true&geometries=geojson&access_token=${mapboxToken}`
         );
         
         const data = await response.json();
@@ -215,7 +266,7 @@ const DestinationMap = ({
     };
 
     fetchRoute();
-  }, [location, showRoutes, mapboxToken, routeVisible, selectedPoint, pointsOfInterest]);
+  }, [props, routeVisible, selectedPoint, mapboxToken]);
 
   const handleTokenSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -244,8 +295,12 @@ const DestinationMap = ({
     const maxLat = bounds.getNorth();
     
     try {
+      const title = !isMultipleLocationsProps(props) && props.title 
+        ? props.title 
+        : 'Destination Map';
+      
       await downloadRegion({
-        name: title || 'Destination Map',
+        name: title,
         bounds: [minLng, minLat, maxLng, maxLat],
         minZoom: 8,
         maxZoom: 14
@@ -308,7 +363,7 @@ const DestinationMap = ({
 
   return (
     <div className="relative rounded-lg overflow-hidden">
-      <div className="h-[300px]">
+      <div className={`${isMultipleLocationsProps(props) ? 'h-[500px]' : 'h-[300px]'}`}>
         <div ref={mapContainer} className="absolute inset-0" />
       </div>
       
@@ -330,21 +385,21 @@ const DestinationMap = ({
           variant="secondary"
           className="px-2 py-1 bg-background/80 text-xs rounded flex items-center gap-1"
           onClick={handleDownloadMap}
-          disabled={isDownloading || isMapAvailableOffline(title || 'Destination Map')}
+          disabled={isDownloading || isMapAvailableOffline(!isMultipleLocationsProps(props) && props.title ? props.title : 'Destination Map')}
         >
           <Download size={14} />
-          {isMapAvailableOffline(title || 'Destination Map') ? 'Downloaded' : 'Download Map'}
+          {isMapAvailableOffline(!isMultipleLocationsProps(props) && props.title ? props.title : 'Destination Map') ? 'Downloaded' : 'Download Map'}
         </Button>
       </div>
       
       {/* Points of Interest Panel */}
-      {showRoutes && pointsOfInterest.length > 0 && (
+      {!isMultipleLocationsProps(props) && props.showRoutes && props.pointsOfInterest && props.pointsOfInterest.length > 0 && (
         <div className="mt-2 border border-border rounded-lg p-2 bg-card">
           <h3 className="text-sm font-medium mb-2 flex items-center gap-1">
             <Map size={16} /> Points of Interest
           </h3>
           <div className="space-y-2 max-h-[150px] overflow-y-auto">
-            {pointsOfInterest.map((poi, index) => (
+            {props.pointsOfInterest.map((poi, index) => (
               <div key={index} className="flex justify-between items-center text-sm">
                 <span>{poi.title}</span>
                 <Button 
