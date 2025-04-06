@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { Backpack, MapPin, Compass, Navigation } from 'lucide-react';
+import { Backpack, MapPin, Compass, Navigation, Music, Coffee, Camera } from 'lucide-react';
 
 const AnimatedTraveler = () => {
   const travelerRef = useRef<HTMLDivElement>(null);
@@ -62,24 +62,77 @@ const AnimatedTraveler = () => {
       style={{ transition: 'transform 0.3s ease-in-out' }}
     >
       <div className="relative">
-        {/* Character */}
-        <div className="w-32 h-32 bg-musafir-spiritual rounded-full flex items-center justify-center relative overflow-visible shadow-lg border-4 border-white">
-          <div className="text-white text-5xl font-bold">👨</div>
+        {/* Full Boy Character */}
+        <div className="relative w-40 h-72">
+          {/* Head */}
+          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-24 h-24 bg-[#F8D3AC] rounded-full border-2 border-[#6E4C1E] z-20">
+            {/* Face */}
+            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-20 flex justify-between">
+              {/* Eyes */}
+              <div className="w-3 h-4 bg-[#222] rounded-full"></div>
+              <div className="w-3 h-4 bg-[#222] rounded-full"></div>
+            </div>
+            {/* Smile */}
+            <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-10 h-5 border-b-2 border-[#222] rounded-b-full"></div>
+            
+            {/* Hat */}
+            <div className="absolute -top-5 left-1/2 transform -translate-x-1/2 w-28 h-8 bg-musafir-trekking rounded-t-full z-10"></div>
+            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 w-24 h-6 bg-musafir-trekking z-10 rounded-t-full"></div>
+          </div>
+          
+          {/* Neck */}
+          <div className="absolute top-22 left-1/2 transform -translate-x-1/2 w-8 h-6 bg-[#F8D3AC] z-10"></div>
+          
+          {/* Body - Shirt */}
+          <div className="absolute top-28 left-1/2 transform -translate-x-1/2 w-28 h-24 bg-musafir-spiritual rounded-t-xl z-10"></div>
+          
+          {/* Arms */}
+          <div className="absolute top-28 left-3 w-8 h-20 bg-musafir-spiritual rounded-full z-0 transform -rotate-12 origin-top"></div>
+          <div className="absolute top-28 right-3 w-8 h-20 bg-musafir-spiritual rounded-full z-30 transform rotate-12 origin-top"></div>
+          
+          {/* Hand Left */}
+          <div className="absolute top-46 left-1 w-6 h-6 bg-[#F8D3AC] rounded-full z-0"></div>
+          
+          {/* Hand Right */}
+          <div className="absolute top-46 right-1 w-6 h-6 bg-[#F8D3AC] rounded-full z-30"></div>
+          
+          {/* Legs */}
+          <div className="absolute top-52 left-1/2 transform -translate-x-1/2 flex gap-2 z-0">
+            <div className="w-10 h-28 bg-musafir-earth rounded-b-xl"></div>
+            <div className="w-10 h-28 bg-musafir-earth rounded-b-xl"></div>
+          </div>
+          
+          {/* Shoes */}
+          <div className="absolute top-79 left-1/2 transform -translate-x-1/2 flex gap-4 z-0">
+            <div className="w-12 h-5 bg-[#333] rounded-t-md rounded-b-md -ml-2"></div>
+            <div className="w-12 h-5 bg-[#333] rounded-t-md rounded-b-md -mr-2"></div>
+          </div>
           
           {/* Backpack */}
-          <div className="absolute -right-8 top-10 bg-musafir-trekking p-2 rounded-lg shadow-md animate-pulse">
-            <Backpack className="w-8 h-8 text-white" />
+          <div className="absolute top-32 left-1/2 transform -translate-x-1/2 w-32 h-20 bg-musafir-trekking rounded-lg z-0">
+            <div className="absolute top-2 left-1/2 transform -translate-x-1/2 w-20 h-3 bg-[#333] rounded-full"></div>
+            <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-24 h-8 bg-[#444] rounded-md flex items-center justify-center">
+              <Backpack className="w-6 h-6 text-white" />
+            </div>
           </div>
           
-          {/* Compass */}
-          <div className="absolute -left-6 bottom-0 bg-musafir-water p-2 rounded-full shadow-md animate-spin-slow">
-            <Compass className="w-6 h-6 text-white" />
+          {/* Camera */}
+          <div className="absolute top-46 right-10 z-40 animate-bounce">
+            <Camera className="w-6 h-6 text-[#333]" />
           </div>
-          
-          {/* Pin */}
-          <div className="absolute -top-8 left-10 animate-bounce">
-            <MapPin className="w-8 h-8 text-musafir-forest fill-musafir-forest" />
-          </div>
+        </div>
+        
+        {/* Additional Accessories */}
+        <div className="absolute -right-8 top-24 bg-musafir-water p-2 rounded-lg shadow-md animate-pulse">
+          <Coffee className="w-6 h-6 text-white" />
+        </div>
+        
+        <div className="absolute -left-6 top-16 bg-musafir-meditation p-2 rounded-full shadow-md animate-spin-slow">
+          <Music className="w-6 h-6 text-white" />
+        </div>
+        
+        <div className="absolute -top-8 left-10 animate-bounce">
+          <MapPin className="w-8 h-8 text-musafir-forest fill-musafir-forest" />
         </div>
         
         {/* Navigation line */}
@@ -93,7 +146,7 @@ const AnimatedTraveler = () => {
         
         {/* Speech bubble */}
         <div className="absolute -top-16 right-0 bg-white px-4 py-2 rounded-xl shadow-md animate-float">
-          <p className="text-sm font-bold text-musafir-spiritual">Let's explore!</p>
+          <p className="text-sm font-bold text-musafir-spiritual">Let's explore India!</p>
           <div className="absolute -bottom-2 right-8 w-4 h-4 bg-white transform rotate-45"></div>
         </div>
       </div>
