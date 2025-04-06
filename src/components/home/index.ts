@@ -1,6 +1,16 @@
 
-export { default as FeaturedDestinations } from './FeaturedDestinations';
-export { default as FeaturesSection } from './FeaturesSection';
-export { default as ToolsSection } from './ToolsSection';
-export { default as ChatbotPreview } from './ChatbotPreview';
-export { default as Footer } from './Footer';
+import FeaturedDestinations from "./FeaturedDestinations";
+import FeaturesSection from "./FeaturesSection";
+import ToolsSection from "./ToolsSection";
+import ChatbotPreview from "./ChatbotPreview";
+import Footer from "./Footer";
+import MapSection from "./MapSection";
+
+export {
+  FeaturedDestinations,
+  FeaturesSection,
+  ToolsSection,
+  ChatbotPreview,
+  Footer,
+  MapSection
+};

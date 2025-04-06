@@ -10,6 +10,7 @@ import {
   ChatbotPreview,
   Footer
 } from "@/components/home";
+import MapSection from "@/components/home/MapSection";
 import { Toaster } from "@/components/ui/toaster";
 
 const Index = () => {
@@ -21,6 +22,7 @@ const Index = () => {
           <Hero />
         </div>
         <FeaturedDestinations />
+        <MapSection />
         <FeaturesSection />
         <ToolsSection />
         <ChatbotPreview />
