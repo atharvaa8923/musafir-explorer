@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/sheet';
 import useTranslation from '@/hooks/useTranslation';
 import LanguageSwitcher from './LanguageSwitcher';
+import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
   const { t } = useTranslation();
@@ -36,6 +37,7 @@ const Navbar = () => {
               {t('blog')}
             </Link>
             <LanguageSwitcher />
+            <ThemeToggle />
           </nav>
           
           <Sheet>
@@ -60,7 +62,10 @@ const Navbar = () => {
                   {t('blog')}
                 </Link>
                 <div className="pt-4 border-t border-border">
-                  <p className="mb-2 text-sm text-muted-foreground">Language</p>
+                  <div className="flex justify-between items-center">
+                    <p className="mb-2 text-sm text-muted-foreground">Language</p>
+                    <ThemeToggle />
+                  </div>
                   <LanguageSwitcher />
                 </div>
               </div>
