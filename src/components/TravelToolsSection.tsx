@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import BudgetPlanner from "@/components/BudgetPlanner";
+import { BudgetPlanner } from "@/components/budget";
 import TripCountdown from "@/components/TripCountdown";
 import TravelChecklist from "@/components/TravelChecklist";
 import WeatherWidget from "@/components/WeatherWidget";
