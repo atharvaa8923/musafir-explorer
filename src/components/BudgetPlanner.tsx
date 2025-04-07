@@ -19,7 +19,7 @@ interface Expense {
 
 interface ExpenseCategory {
   name: string;
-  icon: React.ComponentType;
+  icon: React.ElementType; // Changed from React.ComponentType to React.ElementType
   color: string;
 }
 
@@ -186,17 +186,21 @@ const BudgetPlanner = () => {
         )}
 
         <div className="space-y-3 mb-6">
-          {expensesByCategory.map((category) => (
-            <div key={category.category} className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className={`mr-3 ${category.color}`}>
-                  <category.icon size={18} />
+          {expensesByCategory.map((category) => {
+            // Render the icon component with proper props
+            const IconComponent = category.icon;
+            return (
+              <div key={category.category} className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <div className={`mr-3 ${category.color}`}>
+                    <IconComponent size={18} />
+                  </div>
+                  <span>{category.name}</span>
                 </div>
-                <span>{category.name}</span>
+                <span className="font-medium">₹{category.total}</span>
               </div>
-              <span className="font-medium">₹{category.total}</span>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {addingExpense ? (
@@ -213,14 +217,18 @@ const BudgetPlanner = () => {
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {Object.entries(categories).map(([key, category]) => (
-                    <SelectItem key={key} value={key}>
-                      <div className="flex items-center">
-                        <category.icon className={`mr-2 h-4 w-4 ${category.color}`} />
-                        {category.name}
-                      </div>
-                    </SelectItem>
-                  ))}
+                  {Object.entries(categories).map(([key, category]) => {
+                    // Render the icon component with proper props
+                    const IconComponent = category.icon;
+                    return (
+                      <SelectItem key={key} value={key}>
+                        <div className="flex items-center">
+                          <IconComponent className={`mr-2 h-4 w-4 ${category.color}`} />
+                          {category.name}
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </div>
