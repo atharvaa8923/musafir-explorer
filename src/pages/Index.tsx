@@ -8,9 +8,10 @@ import {
   FeaturesSection,
   ToolsSection,
   ChatbotPreview,
-  Footer
+  Footer,
+  MapSection,
+  BlogSection
 } from "@/components/home";
-import MapSection from "@/components/home/MapSection";
 import { Toaster } from "@/components/ui/toaster";
 
 const Index = () => {
@@ -25,6 +26,7 @@ const Index = () => {
         <MapSection />
         <FeaturesSection />
         <ToolsSection />
+        <BlogSection />
         <ChatbotPreview />
       </main>
       

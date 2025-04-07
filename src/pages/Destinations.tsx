@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import { Link, useLocation } from "react-router-dom";
@@ -13,6 +12,7 @@ import TravelInsights from "@/components/TravelInsights";
 import RelatedDestinations from "@/components/RelatedDestinations";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
+import usePageTransition from "@/hooks/usePageTransition";
 
 // Type for sortable fields
 type SortField = 'price' | 'days' | 'popularity';
@@ -21,6 +21,9 @@ type SortField = 'price' | 'days' | 'popularity';
 type SortOrder = 'asc' | 'desc';
 
 const Destinations = () => {
+  // Add page transition effect
+  usePageTransition();
+  
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const initialSearchQuery = searchParams.get('search') || '';
@@ -110,6 +113,11 @@ const Destinations = () => {
     setSortOrder(order);
   };
 
+  // Add animation classes for list items 
+  const getItemAnimationClass = (index: number) => {
+    return `animate-fade-in opacity-0 [animation-delay:${index * 50}ms] [animation-fill-mode:forwards]`;
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -122,7 +130,7 @@ const Destinations = () => {
             </p>
           </div>
           
-          <div className="mb-8 p-4 border border-border rounded-lg bg-card">
+          <div className="mb-8 p-4 border border-border rounded-lg bg-card shadow-sm transition-all hover:shadow-md">
             <SearchAndFilter 
               onFilterChange={handleFilterChange}
               initialFilters={{
@@ -216,7 +224,10 @@ const Destinations = () => {
                 filteredDestinations.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
                     {filteredDestinations.map((destination, index) => (
-                      <div key={destination.id || index} className="relative">
+                      <div 
+                        key={destination.id || index} 
+                        className={`relative ${getItemAnimationClass(index)}`}
+                      >
                         <Link to={`/destination/${destination.id}`} className="block h-full">
                           <DestinationCard 
                             id={destination.id}
@@ -245,7 +256,7 @@ const Destinations = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-12 border border-border rounded-lg bg-card">
+                  <div className="text-center py-12 border border-border rounded-lg bg-card animate-fade-in">
                     <h3 className="text-xl font-medium mb-2">No destinations found</h3>
                     <p className="text-muted-foreground mb-4">
                       Try adjusting your filters to find destinations that match your preferences.
@@ -265,7 +276,7 @@ const Destinations = () => {
                   </div>
                 )
               ) : (
-                <div className="mb-10 border border-border rounded-lg overflow-hidden h-[500px]">
+                <div className="mb-10 border border-border rounded-lg overflow-hidden h-[500px] animate-fade-in">
                   <DestinationMap locations={filteredDestinations} />
                 </div>
               )}
