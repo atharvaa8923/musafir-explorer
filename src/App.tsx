@@ -7,6 +7,7 @@ import DestinationDetail from '@/pages/DestinationDetail';
 import Itinerary from '@/pages/Itinerary';
 import Blog from '@/pages/Blog';
 import BlogDetail from '@/pages/BlogDetail';
+import PhotoGallery from '@/pages/PhotoGallery';
 import NotFound from '@/pages/NotFound';
 import { Toaster } from "@/components/ui/toaster"
 import Admin from '@/pages/admin';
@@ -25,6 +26,7 @@ function App() {
             <Route path="/itinerary" element={<Itinerary />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/blog/:id" element={<BlogDetail />} />
+            <Route path="/photos" element={<PhotoGallery />} />
             <Route path="/admin" element={<Admin />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
