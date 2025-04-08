@@ -7,6 +7,7 @@ import BudgetHeader from "./BudgetHeader";
 import BudgetProgress from "./BudgetProgress";
 import ExpensesList from "./ExpensesList";
 import ExpenseForm from "./ExpenseForm";
+import ExportBudget from "./ExportBudget";
 
 const BudgetPlanner = () => {
   const { toast } = useToast();
@@ -101,6 +102,14 @@ const BudgetPlanner = () => {
           newExpense={newExpense}
           setNewExpense={setNewExpense}
           handleAddExpense={handleAddExpense}
+        />
+        
+        <ExportBudget 
+          expenses={expenses}
+          budget={budget}
+          spent={spent}
+          remaining={remaining}
+          categoryExpenses={categoryExpenses}
         />
       </CardContent>
     </Card>

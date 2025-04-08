@@ -5,3 +5,4 @@ export { default as BudgetProgress } from './BudgetProgress';
 export { default as ExpensesList } from './ExpensesList';
 export { default as ExpenseForm } from './ExpenseForm';
 export { default as CategoryIcon } from './CategoryIcon';
+export { default as ExportBudget } from './ExportBudget';
