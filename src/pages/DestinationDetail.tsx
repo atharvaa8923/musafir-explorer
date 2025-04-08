@@ -10,11 +10,14 @@ import TransportationOptions from "@/components/TransportationOptions";
 import { useToast } from "@/components/ui/use-toast";
 import { destinations } from "@/data";
 import useDestination from "@/hooks/useDestination";
+import XRayView from "@/components/xray/XRayView";
+import useXRayData from "@/hooks/useXRayData";
 
 const DestinationDetail = () => {
   const { id } = useParams();
   const { toast } = useToast();
   const { destination, loading, error } = useDestination(id || '');
+  const { xrayData, loading: xrayLoading } = useXRayData(id || '');
   
   const destinationData = destination || destinations.find(d => d.id === id);
   
@@ -64,6 +67,13 @@ const DestinationDetail = () => {
         }))
     : [];
 
+  const xrayButton = (
+    <Button variant="outline" className="flex items-center gap-2 ml-auto">
+      <Camera className="h-4 w-4" />
+      XR-AY View
+    </Button>
+  );
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -94,6 +104,19 @@ const DestinationDetail = () => {
                   <Calendar size={18} className="mr-1" />
                   <span>{destinationData.days} days</span>
                 </div>
+                {xrayData && !xrayLoading && (
+                  <div className="ml-auto">
+                    <XRayView 
+                      info={xrayData} 
+                      trigger={
+                        <Button variant="outline" className="bg-black/40 text-white border-white/30 hover:bg-black/60 hover:text-white">
+                          <Camera className="mr-2 h-4 w-4" />
+                          XR-AY View
+                        </Button>
+                      }
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -103,13 +126,19 @@ const DestinationDetail = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <Tabs defaultValue="overview">
-                <TabsList className="mb-6">
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="itinerary">Itinerary</TabsTrigger>
-                  <TabsTrigger value="accommodation">Accommodation</TabsTrigger>
-                  <TabsTrigger value="gallery">Gallery</TabsTrigger>
-                  <TabsTrigger value="routes">Routes & Maps</TabsTrigger>
-                </TabsList>
+                <div className="flex justify-between items-center mb-6">
+                  <TabsList>
+                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="itinerary">Itinerary</TabsTrigger>
+                    <TabsTrigger value="accommodation">Accommodation</TabsTrigger>
+                    <TabsTrigger value="gallery">Gallery</TabsTrigger>
+                    <TabsTrigger value="routes">Routes & Maps</TabsTrigger>
+                  </TabsList>
+                  
+                  {xrayData && !xrayLoading && (
+                    <XRayView info={xrayData} />
+                  )}
+                </div>
                 
                 <TabsContent value="overview" className="space-y-6">
                   <div>
@@ -298,6 +327,38 @@ const DestinationDetail = () => {
                   Secure your spot with a refundable deposit
                 </p>
               </div>
+              
+              {xrayData && !xrayLoading && (
+                <div className="border border-border rounded-lg p-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h3 className="text-xl font-semibold">Historical XR-AY</h3>
+                    <XRayView 
+                      info={xrayData} 
+                      trigger={
+                        <Button variant="outline" size="sm">
+                          <Camera className="mr-2 h-4 w-4" />
+                          View
+                        </Button>
+                      }
+                    />
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    Explore historical images and discover the fascinating history of {destinationData.title}.
+                  </p>
+                  {xrayData.historicalImages[0] && (
+                    <div className="relative aspect-video bg-muted rounded-md overflow-hidden">
+                      <img 
+                        src={xrayData.historicalImages[0].url} 
+                        alt={`Historical image of ${destinationData.title}`}
+                        className="object-cover w-full h-full"
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white p-2">
+                        <div className="text-sm font-medium">Circa {xrayData.historicalImages[0].year}</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
               
               <div className="border border-border rounded-lg p-4">
                 <h3 className="text-xl font-semibold mb-4">Location & Map</h3>

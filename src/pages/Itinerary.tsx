@@ -3,15 +3,24 @@ import React, { useState } from "react";
 import Navbar from "@/components/Navbar";
 import ItineraryDetails from "@/components/ItineraryDetails";
 import { Button } from "@/components/ui/button";
-import { Mountain, Compass, Map, Tent } from "lucide-react";
+import { Mountain, Compass, Map, Tent, Camera } from "lucide-react";
 import useTranslation from "@/hooks/useTranslation";
+import XRayView from "@/components/xray/XRayView";
+import useXRayData from "@/hooks/useXRayData";
 
 const Itinerary = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedDestination, setSelectedDestination] = useState("");
   const { t } = useTranslation();
+  const { xrayData } = useXRayData(selectedDestination);
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
+  };
+
+  // This function will be called from ItineraryDetails when a destination is selected
+  const handleDestinationSelected = (destinationId: string) => {
+    setSelectedDestination(destinationId);
   };
 
   return (
@@ -19,7 +28,20 @@ const Itinerary = () => {
       <Navbar />
       <main className="flex-1 py-6">
         <div className="container mx-auto px-4 mb-6">
-          <h1 className="text-3xl font-bold mb-6">{t('explore_itineraries')}</h1>
+          <div className="flex justify-between items-center mb-6">
+            <h1 className="text-3xl font-bold">{t('explore_itineraries')}</h1>
+            {xrayData && (
+              <XRayView 
+                info={xrayData} 
+                trigger={
+                  <Button variant="outline" className="gap-2">
+                    <Camera className="h-4 w-4" />
+                    XR-AY View
+                  </Button>
+                }
+              />
+            )}
+          </div>
           <div className="flex flex-wrap gap-2 mb-6">
             <Button 
               variant={selectedCategory === "all" ? "default" : "outline"}
@@ -63,7 +85,10 @@ const Itinerary = () => {
             </Button>
           </div>
         </div>
-        <ItineraryDetails selectedCategory={selectedCategory} />
+        <ItineraryDetails 
+          selectedCategory={selectedCategory} 
+          onDestinationSelected={handleDestinationSelected}
+        />
       </main>
       
       <footer className="bg-musafir-brown text-white py-8">

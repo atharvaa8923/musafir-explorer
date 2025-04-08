@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,6 +10,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { toast } from "@/components/ui/use-toast";
 import useTranslation from "@/hooks/useTranslation";
 import useItineraryData from "@/hooks/useItineraryData";
+import XRayView from "@/components/xray/XRayView";
+import useXRayData from "@/hooks/useXRayData";
 import { 
   Calendar, 
   Train, 
@@ -22,14 +24,19 @@ import {
   ChevronDown,
   Info,
   Pin,
-  AlertTriangle
+  AlertTriangle,
+  Camera
 } from "lucide-react";
 
 interface ItineraryDetailsProps {
   selectedCategory: string;
+  onDestinationSelected?: (destinationId: string) => void;
 }
 
-const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({ selectedCategory }) => {
+const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({ 
+  selectedCategory, 
+  onDestinationSelected 
+}) => {
   const [duration, setDuration] = useState("5d");
   const [expanded, setExpanded] = useState<string | null>(null);
   const { t } = useTranslation();
@@ -41,10 +48,19 @@ const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({ selectedCategory })
     setDestination,
     selectedDestinationData
   } = useItineraryData(selectedCategory);
+
+  const { xrayData } = useXRayData(destination);
   
   const toggleExpand = (id: string) => {
     setExpanded(expanded === id ? null : id);
   };
+
+  // Notify parent component when destination changes
+  useEffect(() => {
+    if (destination && onDestinationSelected) {
+      onDestinationSelected(destination);
+    }
+  }, [destination, onDestinationSelected]);
 
   if (loading) {
     return (
@@ -96,6 +112,20 @@ const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({ selectedCategory })
             <SelectItem value="7d">7 {t('days')}</SelectItem>
           </SelectContent>
         </Select>
+
+        {xrayData && (
+          <div className="ml-auto">
+            <XRayView 
+              info={xrayData} 
+              trigger={
+                <Button variant="outline" className="gap-2">
+                  <Camera className="h-4 w-4" />
+                  XR-AY View
+                </Button>
+              }
+            />
+          </div>
+        )}
       </div>
 
       {selectedDestinationData && (
@@ -107,10 +137,24 @@ const ItineraryDetails: React.FC<ItineraryDetailsProps> = ({ selectedCategory })
                   <CardTitle className="text-2xl">{selectedDestinationData.title}</CardTitle>
                   <p className="text-muted-foreground">{selectedDestinationData.location}</p>
                 </div>
-                <div className="flex items-center gap-2 text-musafir-spiritual font-bold">
-                  <IndianRupee className="h-5 w-5" />
-                  <span className="text-xl">{selectedDestinationData.totalCost}</span>
-                  <span className="text-sm text-muted-foreground font-normal">({selectedDestinationData.days} {t('days')})</span>
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2 text-musafir-spiritual font-bold">
+                    <IndianRupee className="h-5 w-5" />
+                    <span className="text-xl">{selectedDestinationData.totalCost}</span>
+                    <span className="text-sm text-muted-foreground font-normal">({selectedDestinationData.days} {t('days')})</span>
+                  </div>
+                  
+                  {xrayData && (
+                    <XRayView 
+                      info={xrayData} 
+                      trigger={
+                        <Button variant="outline" size="sm">
+                          <Camera className="h-4 w-4" />
+                          XR-AY
+                        </Button>
+                      }
+                    />
+                  )}
                 </div>
               </div>
             </CardHeader>
