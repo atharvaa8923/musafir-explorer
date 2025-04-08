@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { 
@@ -11,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { Download, Send, FileDown, FileCsv, FileText } from "lucide-react";
+import { Download, Send, FileDown, Files, FileText } from "lucide-react";
 import { Expense, CategorySummary } from "./types";
 
 interface ExportBudgetProps {
@@ -39,10 +38,8 @@ const ExportBudget: React.FC<ExportBudgetProps> = ({
   };
 
   const generateCSV = () => {
-    // Create header row
     let csvContent = "Category,Amount,Date,Note\n";
     
-    // Add expense rows
     expenses.forEach(expense => {
       const row = [
         `"${expense.category}"`,
@@ -53,7 +50,6 @@ const ExportBudget: React.FC<ExportBudgetProps> = ({
       csvContent += row + "\n";
     });
     
-    // Add summary rows
     csvContent += "\n";
     csvContent += "Summary\n";
     csvContent += `Total Budget,₹${budget}\n`;
@@ -87,7 +83,6 @@ const ExportBudget: React.FC<ExportBudgetProps> = ({
   };
 
   const generatePDF = async () => {
-    // Generate PDF data structure
     const pdfData = {
       title: `Travel Budget Report - ${formatDate()}`,
       budget: budget,
@@ -105,8 +100,6 @@ const ExportBudget: React.FC<ExportBudgetProps> = ({
       }))
     };
 
-    // In a real app, we'd use a library like jsPDF or call a PDF service
-    // For this demo, we'll simulate PDF generation with a JSON blob
     const blob = new Blob([JSON.stringify(pdfData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -125,8 +118,6 @@ const ExportBudget: React.FC<ExportBudgetProps> = ({
   const shareViaEmail = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // In a real app, this would call an API to send the email
-    // For now, we'll just show a success toast
     setTimeout(() => {
       toast({
         title: "Report Shared",
@@ -150,7 +141,7 @@ const ExportBudget: React.FC<ExportBudgetProps> = ({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={downloadCSV} className="cursor-pointer">
-              <FileCsv className="mr-2 h-4 w-4" />
+              <Files className="mr-2 h-4 w-4" />
               <span>Download as CSV</span>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={generatePDF} className="cursor-pointer">
